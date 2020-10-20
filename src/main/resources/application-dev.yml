@@ -50,15 +50,15 @@ spring:
         auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
 
 
-    hikari:
-      pool-name: Retail_HikariCP
-      maximum-pool-size: 30 #连接池最大连接数，默认是10
-      max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
-      idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
-      connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
-      minimum-idle: 5 #最小空闲连接数量
-      connection-test-query: SELECT 1
-      auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+#    hikari:
+#      pool-name: Retail_HikariCP
+#      maximum-pool-size: 30 #连接池最大连接数，默认是10
+#      max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+#      idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
+#      connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
+#      minimum-idle: 5 #最小空闲连接数量
+#      connection-test-query: SELECT 1
+#      auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
 
 
 
