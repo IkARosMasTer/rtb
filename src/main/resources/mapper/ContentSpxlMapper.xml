@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanhua.rtb.mapper.ContentSpxlMapper">
+
+	<resultMap id="BaseResultMap" type="com.yanhua.rtb.entity.ContentSpxl">
+			<id column="id" property="id" />
+
+			<result column="serial_no" property="serialNo" />
+
+			<result column="operation" property="operation" />
+
+			<result column="content_id" property="contentId" />
+
+			<result column="copyright_id" property="copyrightId" />
+
+			<result column="song_id" property="songId" />
+
+			<result column="content_name" property="contentName" />
+
+			<result column="spid" property="spid" />
+
+			<result column="cont_type" property="contType" />
+
+			<result column="para1" property="para1" />
+
+			<result column="publish_time" property="publishTime" />
+
+			<result column="valid_date" property="validDate" />
+
+			<result column="grant_type" property="grantType" />
+
+			<result column="use_area" property="useArea" />
+
+			<result column="spread_channel" property="spreadChannel" />
+
+			<result column="grant_times" property="grantTimes" />
+
+			<result column="create_time" property="createTime" />
+
+			<result column="end_date" property="endDate" />
+
+			<result column="online_date" property="onlineDate" />
+
+			<result column="format" property="format" />
+
+			<result column="fee_type" property="feeType" />
+
+			<result column="hightest_price" property="hightestPrice" />
+
+			<result column="lowest_price" property="lowestPrice" />
+
+			<result column="suggest_price" property="suggestPrice" />
+
+			<result column="discount" property="discount" />
+
+			<result column="discount_desc" property="discountDesc" />
+
+			<result column="settlement_param" property="settlementParam" />
+
+			<result column="discount_settlement_param" property="discountSettlementParam" />
+
+			<result column="range" property="range" />
+
+			<result column="terminal_type" property="terminalType" />
+
+			<result column="channel_ability" property="channelAbility" />
+
+			<result column="cont_level" property="contLevel" />
+
+			<result column="listen_file_path" property="listenFilePath" />
+
+			<result column="send_file_path1" property="sendFilePath1" />
+
+			<result column="label" property="label" />
+
+			<result column="price" property="price" />
+
+			<result column="spproductid" property="spproductid" />
+
+			<result column="single" property="single" />
+
+			<result column="ability" property="ability" />
+
+			<result column="send_file_path2" property="sendFilePath2" />
+
+			<result column="fore_show" property="foreShow" />
+
+			<result column="wapicon" property="wapicon" />
+
+			<result column="wwwicon" property="wwwicon" />
+
+			<result column="poster" property="poster" />
+
+			<result column="ver_poster" property="verPoster" />
+
+			<result column="screenshot" property="screenshot" />
+
+			<result column="descripiton" property="descripiton" />
+
+			<result column="source_company" property="sourceCompany" />
+
+			<result column="source_cpId" property="sourceCpId" />
+
+			<result column="video_level" property="videoLevel" />
+
+			<result column="cpId" property="cpId" />
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, serial_no, operation, content_id, copyright_id, song_id, content_name, spid, cont_type, para1, publish_time, valid_date, grant_type, use_area, spread_channel, grant_times, create_time, end_date, online_date, format, fee_type, hightest_price, lowest_price, suggest_price, discount, discount_desc, settlement_param, discount_settlement_param, range, terminal_type, channel_ability, cont_level, listen_file_path, send_file_path1, label, price, spproductid, single, ability, send_file_path2, fore_show, wapicon, wwwicon, poster, ver_poster, screenshot, descripiton, source_company, source_cpId, video_level, cpId
+	</sql>
+	
+</mapper>

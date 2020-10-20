@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "mybatis-plus.global-config.db-config.refresh-mapper",
+      "type": "java.lang.String",
+      "description": "Description for mybatis-plus.global-config.db-config.refresh-mapper."
+    },
+    {
+      "name": "swagger.enable",
+      "type": "java.lang.String",
+      "description": "Description for swagger.enable."
+    },
+    {
+      "name": "warehousing.cnUnicom.url",
+      "type": "java.lang.String",
+      "description": "Description for warehousing.cnUnicom.url."
+    },
+    {
+      "name": "warehousing.cnUnicom.code",
+      "type": "java.lang.String",
+      "description": "Description for warehousing.cnUnicom.code."
+    },
+    {
+      "name": "warehousing.cnUnicom.md5",
+      "type": "java.lang.String",
+      "description": "Description for warehousing.cnUnicom.md5."
+    }
+  ] }

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanhua.rtb.mapper.ElementMapper">
+
+	<resultMap id="BaseResultMap" type="com.yanhua.rtb.entity.Element">
+
+		    <id column="element_id" property="elementId" />
+
+			<result column="column_id" property="columnId" />
+
+			<result column="element_name" property="elementName" />
+
+			<result column="element_type" property="elementType" />
+
+			<result column="template_id" property="templateId" />
+
+			<result column="content_spxl_id" property="contentSpxlId" />
+
+			<result column="images_type" property="imagesType" />
+
+			<result column="element_img" property="elementImg" />
+
+			<result column="element_img_h" property="elementImgH" />
+
+			<result column="element_order" property="order" />
+
+			<result column="create_time" property="createTime" />
+
+			<result column="update_time" property="updateTime" />
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		column_id, element_id, element_name, element_type, template_id, content_spxl_id, images_type, element_img, element_img_h, element_order, create_time, update_time
+	</sql>
+
+	<resultMap id="BaseElementResult" type="com.yanhua.rtb.vo.ElementVo">
+
+		<id column="element_id2" property="elementId" />
+
+		<result column="column_id2" property="columnId" />
+
+		<result column="element_name2" property="elementName" />
+
+		<result column="element_type2" property="elementType" />
+
+		<result column="template_id2" property="templateId" />
+
+		<result column="content_spxl_id2" property="contentSpxlId" />
+
+		<result column="images_type2" property="imagesType" />
+
+		<result column="element_img2" property="elementImg" />
+
+		<result column="element_img_h2" property="elementImgH" />
+
+		<result column="element_order2" property="elementOrder" />
+
+		<result column="create_time2" property="createTime" />
+
+		<result column="update_time2" property="updateTime" />
+		<association property="eleTemplateVo" javaType="com.yanhua.rtb.vo.TemplateVo">
+			<id column="template_id5" property="templateId" />
+
+			<result column="template_code5" property="templateCode" />
+
+			<result column="template_title5" property="templateTitle" />
+
+			<result column="create_time5" property="createTime" />
+
+			<result column="update_time5" property="updateTime" />
+		</association>
+	</resultMap>
+
+	<select id="getElementResult" resultMap="BaseElementResult">
+		select c.element_id as element_id2,
+		    c.column_id as column_id2,
+		    c.element_name as element_name2,
+		    c.element_type as element_type2,
+		    c.template_id as template_id2,
+		    c.content_spxl_id as content_spxl_id2,
+		    c.images_type as images_type2,
+		    c.element_img as element_img2,
+		    c.element_img_h as element_img_h2,
+		    c.element_order as element_order2,
+		    c.create_time as create_time2,
+		    c.update_time as update_time2,
+		    g.template_id as template_id5,
+		    g.template_code AS template_code5,
+	        g.template_title AS template_title5,
+	        g.create_time AS create_time5,
+	        g.update_time AS update_time5
+		from element c LEFT JOIN template g on g.template_id = c.template_id
+		where c.column_id = #{columnId1,jdbcType=INTEGER}
+		order by c.element_order
+	</select>
+	
+</mapper>

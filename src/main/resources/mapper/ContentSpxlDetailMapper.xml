@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanhua.rtb.mapper.ContentSpxlDetailMapper">
+
+	<resultMap id="BaseResultMap" type="com.yanhua.rtb.entity.ContentSpxlDetail">
+			<id column="id" property="id" />
+
+			<result column="content_id" property="contentId" />
+
+			<result column="file_path" property="filePath" />
+
+			<result column="file_code" property="fileCode" />
+
+			<result column="mime" property="mime" />
+
+			<result column="drmtype" property="drmtype" />
+
+			<result column="file_size" property="fileSize" />
+
+			<result column="file_play_path" property="filePlayPath" />
+
+			<result column="file_play_time" property="filePlayTime" />
+
+			<result column="lyric_path" property="lyricPath" />
+
+			<result column="file_ml" property="fileMl" />
+
+			<result column="file_cyl" property="fileCyl" />
+
+			<result column="samplebitrate" property="samplebitrate" />
+
+			<result column="samplingrate" property="samplingrate" />
+
+			<result column="resolution" property="resolution" />
+
+			<result column="aspectratio" property="aspectratio" />
+
+			<result column="filelhws" property="filelhws" />
+
+			<result column="file_sd" property="fileSd" />
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, content_id, file_path, file_code, mime, drmtype, file_size, file_play_path, file_play_time, lyric_path, file_ml, file_cyl, samplebitrate, samplingrate, resolution, aspectratio, filelhws, file_sd
+	</sql>
+	
+</mapper>

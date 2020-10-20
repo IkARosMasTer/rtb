@@ -1,0 +1,79 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /rtb
+
+spring:
+  profiles:
+    active: test
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+    type: ehcache
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+  servlet:
+    multipart:
+      max-file-size: 256MB
+      max-request-size: 1024MB
+  resources:
+    add-mappings: false
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+
+mybatis-plus:
+  configuration:
+    # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
+    map-underscore-to-camel-case: true
+    # 如果查询结果中包含空值的列，则 MyBatis 在映射的时候，不会映射这个字段
+#    call-setters-on-nulls: true
+    # 二级缓存
+    cache-enabled: true
+    auto-mapping-behavior: full
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.yanhua.**.entity
+  global-config:
+    # 关闭MP3.0自带的banner
+    banner: true
+    #刷新mapper 调试神器
+#    refresh-mapper: true
+    db-config:
+      #主键类型  0:"数据库ID自增", 1:"不操作", 2:"用户输入ID",3:"数字型snowflake", 4:"全局唯一ID UUID", 5:"字符串型snowflake";AUTO:"数据库ID自增" INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: auto
+      #字段策略
+      insert-strategy: ignored
+      update-strategy: ignored
+      #驼峰下划线转换
+      table-underline: true
+      # 逻辑删除配置
+      # 逻辑删除全局值（1表示已删除，这也是Mybatis Plus的默认配置）
+      logic-delete-value: 1
+      # 逻辑未删除全局值（0表示未删除，这也是Mybatis Plus的默认配置）
+      logic-not-delete-value: 0
+      select-strategy: ignored
+#    #字段策略 IGNORED:"忽略判断"  NOT_NULL:"非 NULL 判断")  NOT_EMPTY:"非空判断"
+##    field-strategy: NOT_EMPTY   版本过期
+      #数据库类型
+#      db-type: MYSQL
+
+warehousing:
+  cnUnicom:
+    url: http://101.71.22.37:36002/qk/sync/channelsync/query
+    code: 3000007497
+    md5: B26795DB8A716BB7
+    fileUrl: http://listen.10155.com/listener
+    user: 18720552070
+
+
+mams:
+  path: /movies/mams
+

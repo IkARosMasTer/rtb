@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper namespace="com.yanhua.rtb.mapper.ColumnMapper">-->
+
+<!--	<resultMap id="BaseResultMap" type="com.yanhua.rtb.entity.Column">-->
+<!--			<id column="column_id" property="columnId" />-->
+
+<!--			<result column="template_id" property="templateId" />-->
+
+<!--			<result column="area_id" property="areaId" />-->
+
+<!--			<result column="bg_photo" property="bgPhoto" />-->
+
+<!--			<result column="column_name" property="columnName" />-->
+
+<!--			<result column="par_column_id" property="parColumnId" />-->
+
+<!--			<result column="level" property="level" />-->
+
+<!--			<result column="column_order" property="columnOrder" />-->
+
+<!--			<result column="subtitle" property="subtitle" />-->
+
+<!--			<result column="background_img" property="backgroundImg" />-->
+
+<!--			<result column="create_time" property="createTime" />-->
+
+<!--			<result column="update_time" property="updateTime" />-->
+
+<!--	</resultMap>-->
+
+<!--	<resultMap id="BasePlusResultMap" type="com.yanhua.rtb.vo.ColumnVo">-->
+<!--		<id column="column_id" property="columnId" />-->
+
+<!--		<result column="template_id" property="templateId" />-->
+
+<!--		<result column="area_id" property="areaId" />-->
+
+<!--		<result column="bg_photo" property="bgPhoto" />-->
+
+<!--		<result column="column_name" property="columnName" />-->
+
+<!--		<result column="par_column_id" property="parColumnId" />-->
+
+<!--		<result column="level" property="level" />-->
+
+<!--		<result column="column_order" property="columnOrder" />-->
+
+<!--		<result column="subtitle" property="subtitle" />-->
+
+<!--		<result column="background_img" property="backgroundImg" />-->
+
+<!--		<result column="create_time" property="createTime" />-->
+
+<!--		<result column="update_time" property="updateTime" />-->
+<!--		<association property="templateVo" javaType="com.yanhua.rtb.vo.TemplateVo" >-->
+<!--			<id column="template_id3" property="templateId" />-->
+
+<!--			<result column="template_code3" property="templateCode" />-->
+
+<!--			<result column="template_title3" property="templateTitle" />-->
+
+<!--			<result column="create_time3" property="createTime" />-->
+
+<!--			<result column="update_time3" property="updateTime" />-->
+<!--		</association>-->
+<!--		<collection property="specialList" ofType="com.yanhua.rtb.vo.SpecialVo" >-->
+<!--			<id column="columnId1" property="columnId" />-->
+
+<!--			<result column="templateId1" property="templateId" />-->
+
+<!--			<result column="areaId1" property="areaId" />-->
+
+<!--			<result column="bgPhoto1" property="bgPhoto" />-->
+
+<!--			<result column="columnName1" property="columnName" />-->
+
+<!--			<result column="parColumnId1" property="parColumnId" />-->
+
+<!--			<result column="level1" property="level" />-->
+
+<!--			<result column="columnOrder1" property="columnOrder" />-->
+
+<!--			<result column="subtitle1" property="subtitle" />-->
+
+<!--			<result column="backgroundImg1" property="backgroundImg" />-->
+
+<!--			<result column="createTime1" property="createTime" />-->
+
+<!--			<result column="updateTime1" property="updateTime" />-->
+<!--			<association property="speTemplateVo" javaType="com.yanhua.rtb.vo.TemplateVo" >-->
+<!--				<id column="template_id4" property="templateId" />-->
+
+<!--				<result column="template_code4" property="templateCode" />-->
+
+<!--				<result column="template_title4" property="templateTitle" />-->
+
+<!--				<result column="create_time4" property="createTime" />-->
+
+<!--				<result column="update_time4" property="updateTime" />-->
+<!--			</association>-->
+<!--			<collection property="elementList" ofType="com.yanhua.rtb.vo.ElementVo" select="com.yanhua.rtb.mapper.ElementMapper.getElementResult" column="columnId1=columnId1"/>-->
+<!--		</collection>-->
+<!--	</resultMap>-->
+<!--	-->
+<!--&lt;!&ndash;	<resultMap id="BaseElementResult" type="com.yanhua.rtb.vo.ElementVo">&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<id column="element_id2" property="elementId" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="column_id2" property="columnId" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="element_name2" property="elementName" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="element_type2" property="elementType" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="template_id2" property="templateId" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="images_type2" property="imagesType" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="element_img2" property="elementImg" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="elementImg_h2" property="elementImgH" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="order2" property="order" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="create_time2" property="createTime" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;			<result column="update_time2" property="updateTime" />&ndash;&gt;-->
+<!--&lt;!&ndash;	</resultMap>&ndash;&gt;-->
+<!--	-->
+<!--	<sql id="Base_Column_List">-->
+<!--		column_id, template_id,area_id, bg_photo, column_name, par_column_id, level, column_order, subtitle, background_img, create_time, update_time-->
+<!--	</sql>-->
+
+
+<!--&lt;!&ndash;	<select id="getElementResult" resultMap="BaseElementResult">&ndash;&gt;-->
+<!--&lt;!&ndash;		select c.element_id as element_id2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.column_id as column_id2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.element_type as element_type2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.template_id as template_id2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.images_type as images_type2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.element_img as element_img2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.elementImg_h as elementImg_h2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.order as order2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.create_time as create_time2,&ndash;&gt;-->
+<!--&lt;!&ndash;		    c.update_time as update_time2&ndash;&gt;-->
+<!--&lt;!&ndash;		from element c where c.column_id = #{columnId1,jdbcType=INTEGER}&ndash;&gt;-->
+<!--&lt;!&ndash;		order by c.element_id&ndash;&gt;-->
+<!--&lt;!&ndash;	</select>&ndash;&gt;-->
+
+<!--	<select id="getByAreaIdAndColumnId" resultMap="BasePlusResultMap" >-->
+<!--        SELECT-->
+<!--	a.*,-->
+<!--	b.column_id AS columnId1,-->
+<!--	b.template_id AS templateId1,-->
+<!--	b.area_id AS areaId1,-->
+<!--	b.bg_photo AS bgPhoto1,-->
+<!--	b.column_name AS columnName1,-->
+<!--	b.par_column_id AS parColumnId1,-->
+<!--	b.LEVEL AS level1,-->
+<!--	b.column_order AS columnOrder1,-->
+<!--	b.subtitle AS subtitle1,-->
+<!--	b.background_img AS backgroundImg1,-->
+<!--	b.create_time AS createTime1,-->
+<!--	b.update_time AS updateTime1,-->
+<!--	d.template_id AS template_id3,-->
+<!--	d.template_code AS template_code3,-->
+<!--	d.template_title AS template_title3,-->
+<!--	d.create_time AS create_time3,-->
+<!--	d.update_time AS update_time3,-->
+<!--	f.template_id AS template_id4,-->
+<!--	f.template_code AS template_code4,-->
+<!--	f.template_title AS template_title4,-->
+<!--	f.create_time AS create_time4,-->
+<!--	f.update_time AS update_time4-->
+<!--FROM-->
+<!--	`column` a-->
+<!--	LEFT JOIN template d ON d.template_id = a.template_id-->
+<!--	LEFT JOIN `column` b ON b.par_column_id = a.column_id-->
+<!--	left JOIN template f ON f.template_id = b.template_id-->
+<!--WHERE-->
+<!--		a.area_id = #{areaId,jdbcType=INTEGER}-->
+<!--		AND a.column_id = #{columnId,jdbcType=INTEGER}-->
+<!--        order by b.column_id asc-->
+<!--	</select>-->
+<!--&lt;!&ndash;	<select id="getByAreaIdAndColumnId" resultMap="BasePlusResultMap" >&ndash;&gt;-->
+<!--&lt;!&ndash;        SELECT&ndash;&gt;-->
+<!--&lt;!&ndash;		a.*, b.column_id AS columnId1 , b.template_id AS templateId1,b.area_id AS areaId1, b.bg_photo AS bgPhoto1, b.column_name AS columnName1, b.par_column_id AS parColumnId1, b.level AS level1, b.column_order AS columnOrder1, b.subtitle AS subtitle1, b.background_img AS backgroundImg1, b.create_time AS createTime1, b.update_time AS updateTime1&ndash;&gt;-->
+<!--&lt;!&ndash;	FROM&ndash;&gt;-->
+<!--&lt;!&ndash;		`column` a&ndash;&gt;-->
+<!--&lt;!&ndash;		LEFT JOIN `column` b ON b.par_column_id = a.column_id&ndash;&gt;-->
+<!--&lt;!&ndash;	WHERE&ndash;&gt;-->
+<!--&lt;!&ndash;		a.area_id = #{areaId,jdbcType=INTEGER}&ndash;&gt;-->
+<!--&lt;!&ndash;		AND a.column_id = #{columnId,jdbcType=INTEGER}&ndash;&gt;-->
+<!--&lt;!&ndash;	GROUP BY&ndash;&gt;-->
+<!--&lt;!&ndash;	b.column_id&ndash;&gt;-->
+<!--&lt;!&ndash;	</select>&ndash;&gt;-->
+
+<!--</mapper>-->

@@ -1,0 +1,107 @@
+#数据源配置
+spring:
+  redis:
+    ##redis 单机环境配置
+    host: 183.131.15.11
+    port: 6979
+    password: bms_pwd~!@123
+    #    host: 127.0.0.1
+    #    port: 6379
+    #    password:
+    database: 10
+    #    database: 0
+    ssl: false
+    ##redis 集群环境配置
+    #cluster:
+    #  nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003
+    #  commandTimeout: 5000
+  #连接池配置
+  datasource:
+#    hikari:
+    primary:
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 5zkgkdr2ol6
+      hikari:
+        pool-name: Retail_HikariCP
+        maximum-pool-size: 30 #连接池最大连接数，默认是10
+        max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+        idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
+        connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
+        minimum-idle: 5 #最小空闲连接数量
+        connection-test-query: SELECT 1
+        auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+    quartz:
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 5zkgkdr2ol6
+      hikari:
+        pool-name: Retail_HikariCP
+        maximum-pool-size: 30 #连接池最大连接数，默认是10
+        max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+        idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
+        connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
+        minimum-idle: 5 #最小空闲连接数量
+        connection-test-query: SELECT 1
+        auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+
+
+#    hikari:
+#      pool-name: Retail_HikariCP
+#      maximum-pool-size: 30 #连接池最大连接数，默认是10
+#      max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+#      idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
+#      connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
+#      minimum-idle: 5 #最小空闲连接数量
+#      connection-test-query: SELECT 1
+#      auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+
+
+
+  quartz:
+    dataSource:
+      default:
+        driver: com.mysql.jdbc.Driver
+        URL: jdbc:mysql://localhost:3306/jobconfig?useUnicode=true&characterEncoding=utf8
+        user: root
+        password: 12345678
+        maxConnections: 5
+    #相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: quartzScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: qrtz_
+            isClustered: false
+            clusterCheckinInterval: 10000
+            useProperties: false
+            dataSource: quartz
+          dataSource:
+            quartz:
+              driver: com.mysql.jdbc.Driver
+              URL: jdbc:mysql://localhost:3306/jobconfig?useUnicode=true&characterEncoding=utf8
+              user: root
+              password: 12345678
+              maxConnections: 5
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    #数据库方式
+    job-store-type: JDBC
+    #初始化表结构
+    jdbc:
+      initialize-schema: never
+
+swagger:
+  enable: true

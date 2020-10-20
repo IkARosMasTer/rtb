@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanhua.rtb.mapper.UserMapper">
+<!--    <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>-->
+<!--    <resultMap id="BaseResultMap" type="com.yanhua.rtb.entity.User">-->
+<!--        <result property="id" column="id" javaType="Integer" jdbcType="int"/>-->
+<!--        <result property="createTime" column="id" javaType="" jdbcType="int"/>-->
+<!--    </resultMap>-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+<!--        <property name="timeToIdleSeconds" value="3600"/>-->
+<!--        <property name="timeToLiveSeconds" value="3600"/>-->
+<!--        <property name="maxEntriesLocalHeap" value="1000"/>-->
+<!--        <property name="maxEntriesLocalDisk" value="10000000"/>-->
+<!--        <property name="memoryStoreEvictionPolicy" value="LRU"/>-->
+    </cache>
+    <!-- 查找用户信息 -->
+    <select id="findAllUser" resultType="com.yanhua.rtb.entity.User" useCache="true">
+       select * from user
+    </select>
+<!--    <select id="selectUserByGtid" resultType="com.yanhua.rtb.entity.User" parameterType="int">-->
+<!--    SELECT * FROM user WHERE id > #{fraction}-->
+<!--    </select>-->
+
+
+</mapper>
