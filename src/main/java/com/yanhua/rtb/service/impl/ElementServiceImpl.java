@@ -60,11 +60,13 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
         Integer templetId = elementVo.getColumnId();
         //判断是否存在content_id
         String contentSpxlId = elementVo.getContentSpxlId();
-        if (iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,contentSpxlId).last("LIMIT 1"))==null){
+        ContentSpxl contentSpxl = iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,contentSpxlId).last("LIMIT 1"));
+        if (contentSpxl==null){
             //无对应的彩铃内容
             log.warn("saveElement=========>无对应的彩铃内容:模板id{}",templetId);
             throw new EngineException("模板"+templetId+"无对应的彩铃内容");
         }
+        elementVo.setElementName(contentSpxl.getContentName());
         elementVo.setElementOrder(countElementNumByTempletId(templetId)+1);
         Element element = new Element();
         BeanUtils.copyProperties(elementVo,element);
@@ -132,7 +134,7 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
         Integer templetId = elementVo.getColumnId();
         Element element = new Element();
 
-        elementVo.setElementOrder(countElementNumByTempletId(templetId)+1);
+//        elementVo.setElementOrder(countElementNumByTempletId(templetId)+1);
         BeanUtils.copyProperties(elementVo,element);
         Integer templateId = elementVo.getTemplateId();
         //获取模板样式
@@ -204,7 +206,7 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
                 boolean eleTemplateRes = iTemplateService.saveOrUpdateBatch(eleTemplates);
                 stringBuilder.append(";推荐位的模板样式处理").append(eleTemplateRes);
                 //处理推荐位（元素）
-                elements.stream().filter(element -> element!=null&&element.getEleTemplate()!=null).forEach(element -> {
+                elements.stream().filter(element -> element!=null&&StringUtils.isNotBlank(element.getContentSpxlId())).forEach(element -> {
                     if (element.getCreateTime()==null){
                         element.setCreateTime(new Date());
                     }
@@ -212,6 +214,12 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
                     element.setTemplateId(element.getEleTemplate().getTemplateId());
                     j.getAndIncrement();
                     element.setElementOrder(countElementNumByTempletId(element.getColumnId())+j.intValue());
+                    if (StringUtils.isEmpty(element.getElementName())){
+                        ContentSpxl contentSpxl = iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,element.getContentSpxlId()).last("LIMIT 1"));
+                        if (contentSpxl!=null){
+                            element.setElementName(contentSpxl.getContentName());
+                        }
+                    }
                 });
                 boolean elementRes = saveOrUpdateBatch(elements);
                 stringBuilder.append(";推荐位处理").append(elementRes);
