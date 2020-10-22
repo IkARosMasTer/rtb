@@ -37,7 +37,7 @@ public class ElementVo implements Serializable {
     private static final long serialVersionUID = 2519516095728870029L;
 
     @ApiModelProperty(name = "templetId" , value = "模板id")
-    @NotNull(message = "模板id不能為空")
+//    @NotNull(message = "模板id不能為空")
     @JsonProperty("templetId")
     private Integer columnId;
 
