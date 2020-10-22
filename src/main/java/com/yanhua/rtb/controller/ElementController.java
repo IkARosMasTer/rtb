@@ -69,8 +69,8 @@ public class ElementController {
         return iElementService.saveElement(elementVo);
     }
 
-    @ApiOperation(value = "删除单个推荐位",httpMethod = "DELETE",notes = "根据推荐位id,删除推荐位")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除单个推荐位",httpMethod = "GET",notes = "根据推荐位id,删除推荐位")
+    @RequestMapping(value = "/delete/{areaId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.GET)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long"),

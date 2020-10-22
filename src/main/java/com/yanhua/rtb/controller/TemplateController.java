@@ -78,8 +78,8 @@ public class TemplateController {
         return iTemplateService.getTemplateVo(templateId);
     }
 
-    @ApiOperation(value = "删除模板样式", httpMethod = "DELETE", notes = "根据模板id,删除模板样式")
-    @RequestMapping(value = "/{templateId}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除模板样式", httpMethod = "GET", notes = "根据模板id,删除模板样式")
+    @RequestMapping(value = "/delete/{templateId}", method = RequestMethod.GET)
     @ResponseBody
     public boolean deleteTemplate(@PathVariable Integer templateId) {
         return iTemplateService.removeById(templateId);

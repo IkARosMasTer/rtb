@@ -57,8 +57,8 @@ public class AreaController {
         return areaService.disableById(id);
     }
 
-    @ApiOperation(value = "刪除某个地区信息",httpMethod = "DELETE",notes = "徹底刪除元數據")
-    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    @ApiOperation(value = "刪除某个地区信息",httpMethod = "GET",notes = "徹底刪除元數據")
+    @RequestMapping(value = "/delete/{id}",method = RequestMethod.GET)
     public int delArea(@PathVariable Integer id){
         return areaService.removeById(id);
     }
