@@ -8,6 +8,7 @@ package com.yanhua.rtb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yanhua.rtb.common.EngineException;
+import com.yanhua.rtb.entity.ContentSpxl;
 import com.yanhua.rtb.entity.Element;
 import com.yanhua.rtb.entity.RColumn;
 import com.yanhua.rtb.entity.Template;
@@ -58,8 +59,8 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
     public ElementVo saveElement(ElementVo elementVo) {
         Integer templetId = elementVo.getColumnId();
         //判断是否存在content_id
-        Integer contentSpxlId = elementVo.getContentSpxlId();
-        if (iContentSpxlService.getById(contentSpxlId)==null){
+        String contentSpxlId = elementVo.getContentSpxlId();
+        if (iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,contentSpxlId).last("LIMIT 1"))==null){
             //无对应的彩铃内容
             log.warn("saveElement=========>无对应的彩铃内容:模板id{}",templetId);
             throw new EngineException("模板"+templetId+"无对应的彩铃内容");
@@ -118,7 +119,10 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
         //删除模板下的所有推荐位
         List<Element> elementList = list(new QueryWrapper<Element>().lambda().eq(Element::getColumnId,templetId));
         List<Integer> elementIds = elementList.stream().filter(Objects::nonNull).map(Element::getElementId).collect(Collectors.toList());
-        int num =  elementMapper.deleteBatchIds(elementIds);
+        int num = 0;
+        if (elementIds.size() > 0){
+            num =  elementMapper.deleteBatchIds(elementIds);
+        }
         return "成功删除"+num+"条推荐位";
     }
 

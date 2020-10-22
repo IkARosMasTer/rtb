@@ -49,7 +49,7 @@ public class Element extends Model<Element> {
 	private Integer templateId;
 
 	@ApiModelProperty(name = "contentSpxlId" , value = "元素（推荐位）对应彩铃内容id")
-	private Integer contentSpxlId;
+	private String contentSpxlId;
     
 	@ApiModelProperty(name = "imagesType" , value = "图片类型")
 	private Integer imagesType;

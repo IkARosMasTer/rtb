@@ -51,11 +51,11 @@ public class ElementVo implements Serializable {
     private Integer elementType;
 
     @ApiModelProperty(name = "templateId" , value = "元素（推荐位）模板样式id")
-    @NotNull(message = "元素（推荐位）模板样式id不能為空")
+//    @NotNull(message = "元素（推荐位）模板样式id不能為空")
     private Integer templateId;
 
     @ApiModelProperty(name = "contentSpxlId" , value = "元素（推荐位）对应彩铃内容id")
-    private Integer contentSpxlId;
+    private String contentSpxlId;
 
     @ApiModelProperty(name = "imagesType" , value = "图片类型")
     private Integer imagesType;

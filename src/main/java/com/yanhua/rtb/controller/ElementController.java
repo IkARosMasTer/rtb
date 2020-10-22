@@ -59,7 +59,7 @@ public class ElementController {
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public ElementVo saveTemplet(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid ElementVo elementVo){
+    public ElementVo saveElement(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid ElementVo elementVo){
         irColumnService.checkColumnAndArea(areaId,columnId);
         iTempletService.checkTemplet(templetId);
         elementVo.setColumnId(templetId);
@@ -83,8 +83,8 @@ public class ElementController {
         iTempletService.checkTemplet(templetId);
         return iElementService.deleteElement(elementId);
     }
-    @ApiOperation(value = "删除模板下所有推荐位",httpMethod = "DELETE",notes = "根据模板id,删除所有推荐位")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/",method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除模板下所有推荐位",httpMethod = "GET",notes = "根据模板id,删除所有推荐位")
+    @RequestMapping(value = "/delete/{areaId}/{columnId}/{templetId}/",method = RequestMethod.GET)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")

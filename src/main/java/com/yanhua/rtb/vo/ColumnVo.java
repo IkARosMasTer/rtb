@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -50,6 +51,7 @@ public class ColumnVo implements Serializable {
     private String bgPhoto;
 
     @ApiModelProperty(name = "columnName" , value = "栏目名称")
+    @NotEmpty(message = "栏目名称不能为空")
     private String columnName;
 
     @ApiModelProperty(name = "parColumnId" , value = "栏目父id")

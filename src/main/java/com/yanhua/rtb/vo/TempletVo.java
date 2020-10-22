@@ -11,6 +11,7 @@
 package com.yanhua.rtb.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yanhua.rtb.entity.Template;
 import io.swagger.annotations.ApiModelProperty;
@@ -43,7 +44,7 @@ public class TempletVo implements Serializable {
     private Integer columnId;
 
     @ApiModelProperty(name = "templateId" , value = "模板的模板样式id")
-    @NotEmpty(message = "模板的模板样式id不能为空")
+    @NotNull(message = "模板的模板样式id不能为空")
     private Integer templateId;
 
     @ApiModelProperty(name = "areaId" , value = "地区id")
@@ -92,6 +93,7 @@ public class TempletVo implements Serializable {
     private TemplateVo temTemplateVo;
 
 //    @ApiModelProperty(name = "temTemplate" , value = "模板的模板样式视图")
+    @JsonIgnore
     private Template temTemplate;
 
 

@@ -201,7 +201,7 @@ public class RColumnServiceImpl extends ServiceImpl<RColumnMapper, RColumn> impl
             throw new EngineException(PARAM_IS_INVALID);
         }
         RColumn rColumn = columnMapper.selectById(columnId);
-        if (rColumn==null){
+        if (rColumn==null||!"1".equals(rColumn.getLevel())){
             throw new EngineException("当前地区下无该栏目");
         }
     }
@@ -221,8 +221,12 @@ public class RColumnServiceImpl extends ServiceImpl<RColumnMapper, RColumn> impl
             int temNum = columnMapper.delete(lambdaQueryWrapper);
             stringBuilder.append("删除模板").append(temNum).append("条成功;");
             //删除推荐位
-            int eleNum = elementMapper.delete(new QueryWrapper<Element>().lambda().in(Element::getColumnId,templetIds));
+            int eleNum = 0;
+            if (templetIds!=null&&templetIds.size()>0){
+                eleNum = elementMapper.delete(new QueryWrapper<Element>().lambda().in(Element::getColumnId,templetIds));
+            }
             stringBuilder.append("删除推荐位").append(eleNum).append("条成功;");
+
         }else {
             stringBuilder.append("删除栏目失败");
         }

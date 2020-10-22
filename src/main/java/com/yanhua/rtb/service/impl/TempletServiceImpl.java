@@ -114,7 +114,8 @@ public class TempletServiceImpl implements ITempletService {
         if (templetId<0){
             throw new EngineException(PARAM_IS_INVALID);
         }
-        if (irColumnService.getById(templetId)==null){
+        RColumn rColumn = irColumnService.getById(templetId);
+        if (rColumn==null||!"2".equals(rColumn.getLevel())){
             throw new EngineException("该模板不存在!");
         }
     }

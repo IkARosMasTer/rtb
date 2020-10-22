@@ -128,8 +128,8 @@ public class RColumnController {
         return columnService.saveOrUpdateColumnVo(columnVo);
     }
 
-    @ApiOperation(value = "删除某个栏目的所有信息",httpMethod = "DELETE",notes = "删除元數據以及相关数据,返回信息")
-    @RequestMapping(value = "/{areaId}/{columnId}",method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除某个栏目的所有信息",httpMethod = "GET",notes = "删除元數據以及相关数据,返回信息")
+    @RequestMapping(value = "/delete/{areaId}/{columnId}",method = RequestMethod.GET)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
 

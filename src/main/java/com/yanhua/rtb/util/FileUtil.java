@@ -1,6 +1,6 @@
 package com.yanhua.rtb.util;
 
-import com.yanhua.rtb.common.Context;
+import com.yanhua.rtb.common.GlobalConstant;
 import com.yanhua.rtb.common.EngineException;
 import org.llmin.core.util.Util;
 
@@ -24,17 +24,17 @@ public class FileUtil {
 		String dd = id.substring(6, 8);
 		String hh = id.substring(8, 10);
 		String mm = id.substring(10, 12);
-		return Context.FILE_SEP +
+		return GlobalConstant.FILE_SEP +
 				type +
-				Context.FILE_SEP +
+				GlobalConstant.FILE_SEP +
 				yyyyMm +
-				Context.FILE_SEP +
+				GlobalConstant.FILE_SEP +
 				dd +
-				Context.FILE_SEP +
+				GlobalConstant.FILE_SEP +
 				hh +
-				Context.FILE_SEP +
+				GlobalConstant.FILE_SEP +
 				mm +
-				Context.FILE_SEP +
+				GlobalConstant.FILE_SEP +
 				id;
 	}
 	
@@ -50,11 +50,11 @@ public class FileUtil {
 		String id = UniqueId.getYMdHmsSId();
 		String yyyyMMdd = id.substring(0, 8);
 		StringBuffer sb = new StringBuffer();
-		sb.append(Context.FILE_SEP);
-		sb.append(Context.MAMS_PATH_NAME);
-		sb.append(Context.FILE_SEP);
+		sb.append(GlobalConstant.FILE_SEP);
+		sb.append(GlobalConstant.MAMS_PATH_NAME);
+		sb.append(GlobalConstant.FILE_SEP);
 		sb.append(yyyyMMdd);
-		sb.append(Context.FILE_SEP);
+		sb.append(GlobalConstant.FILE_SEP);
 		sb.append(id);
 		sb.append(".");
 		sb.append(fileSuffix);
@@ -65,7 +65,7 @@ public class FileUtil {
 
 	public static String createPath(String path, String type, String fileSuffix) {
 		StringBuffer sb = new StringBuffer();
-		sb.append(Context.FILE_SEP);
+		sb.append(GlobalConstant.FILE_SEP);
 		sb.append(Util.killNull(path));
 		sb.append(createNewFileName(type));
 		sb.append(".");
@@ -82,7 +82,7 @@ public class FileUtil {
 	}
 	
 	public static String getFilePath(String path) {
-		int index = path.lastIndexOf(Context.FILE_SEP);
+		int index = path.lastIndexOf(GlobalConstant.FILE_SEP);
 		if (index > 0) {
 			return path.substring(0, index);
 		}
@@ -90,7 +90,7 @@ public class FileUtil {
 	}
 	
 	public static String getFileName(String path) {
-		int index = path.lastIndexOf(Context.FILE_SEP);
+		int index = path.lastIndexOf(GlobalConstant.FILE_SEP);
 		if (index > 0) {
 			return path.substring(index + 1);
 		}
@@ -99,19 +99,19 @@ public class FileUtil {
 
 	public static String resetPath(String path) {
 		String returnPath = Util.killNull(path);
-		returnPath = returnPath.replaceAll("\\\\+", Context.FILE_SEP).replaceAll("\\\\+|/+", Context.FILE_SEP);
-		if (returnPath.length() > 1 && returnPath.endsWith(Context.FILE_SEP) )
+		returnPath = returnPath.replaceAll("\\\\+", GlobalConstant.FILE_SEP).replaceAll("\\\\+|/+", GlobalConstant.FILE_SEP);
+		if (returnPath.length() > 1 && returnPath.endsWith(GlobalConstant.FILE_SEP) )
 			return returnPath.substring(0,returnPath.length() - 1);
 		return returnPath;
 	}
 	
 	public static String resetPath(String path, boolean b) {
 		String returnPath = Util.killNull(path);
-		returnPath = returnPath.replaceAll("\\\\+", Context.FILE_SEP).replaceAll("\\\\+|/+", Context.FILE_SEP);
-		if ( b && !returnPath.endsWith(Context.FILE_SEP) ) {
-			returnPath += Context.FILE_SEP;
+		returnPath = returnPath.replaceAll("\\\\+", GlobalConstant.FILE_SEP).replaceAll("\\\\+|/+", GlobalConstant.FILE_SEP);
+		if ( b && !returnPath.endsWith(GlobalConstant.FILE_SEP) ) {
+			returnPath += GlobalConstant.FILE_SEP;
 		}
-		if ( !b && returnPath.endsWith(Context.FILE_SEP) ) {
+		if ( !b && returnPath.endsWith(GlobalConstant.FILE_SEP) ) {
 			if (returnPath.length() > 1 )
 				returnPath = returnPath.substring(0,returnPath.length() - 1);
 		}		

@@ -68,8 +68,8 @@ public class TempletController {
         return iTempletService.saveTemplet(templetVo);
     }
 
-    @ApiOperation(value = "删除单个模板",httpMethod = "DELETE",notes = "根据模板id,删除模板")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}",method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除单个模板",httpMethod = "GET",notes = "根据模板id,删除模板")
+    @RequestMapping(value = "/delete/{areaId}/{columnId}/{templetId}",method = RequestMethod.GET)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
