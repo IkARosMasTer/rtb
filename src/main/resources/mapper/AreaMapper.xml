@@ -24,7 +24,7 @@
 	<select id="selectAll" resultMap="BaseResultMap" useCache="true">
 		select
 		<include refid="Base_Column_List" />
-        from Area
+        from area
         where status=0
     </select>
 

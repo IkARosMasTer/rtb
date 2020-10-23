@@ -47,9 +47,9 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
     public List<Area> findAll() {
 
         List<Area> areas =  areaMapper.selectAll();
-        areas.forEach(area -> {
-            area.setAreaId(null);
-        });
+//        areas.forEach(area -> {
+//            area.setAreaId(null);
+//        });
 //        saveOrUpdateBatch(areas);
 //        List<User> users = userMapper.findAllUser();
 //        users.forEach(user -> {
