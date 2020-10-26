@@ -6,13 +6,13 @@
  */
 package com.yanhua.rtb.service;
 
-import com.yanhua.rtb.entity.Area;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yanhua.rtb.entity.Area;
 
 import java.util.List;
 
 /**
- * @description 地区服务层
+ * @description 渠道服务层
  * @version V1.0
  * @author Emiya
  * 

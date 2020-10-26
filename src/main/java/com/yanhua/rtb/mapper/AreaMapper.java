@@ -7,12 +7,9 @@
 package com.yanhua.rtb.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yanhua.rtb.entity.User;
+import com.yanhua.rtb.entity.Area;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
-import com.yanhua.rtb.entity.Area;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 

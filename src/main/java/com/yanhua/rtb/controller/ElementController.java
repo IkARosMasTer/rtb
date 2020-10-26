@@ -108,11 +108,12 @@ public class ElementController {
         //检查
         iTempletService.checkTemplet(templetId);
         List<Element> elements = iElementService.list(new QueryWrapper<Element>().lambda().eq(Element::getColumnId,templetId));
-        return elements.stream().filter(Objects::nonNull).map(element -> {
+        List<ElementVo> elementVos =  elements.stream().filter(Objects::nonNull).map(element -> {
             ElementVo elementVo = new ElementVo();
             BeanUtils.copyProperties(element,elementVo);
             return elementVo;
         }).collect(Collectors.toList());
+        return iElementService.getElementAlls(templetId);
     }
     @ApiOperation(value = "查询模板下单个推荐位",httpMethod = "GET",notes = "根据模板id,查询单个推荐位")
     @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.GET)
@@ -126,12 +127,7 @@ public class ElementController {
         irColumnService.checkColumnAndArea(areaId,columnId);
         //检查
         iTempletService.checkTemplet(templetId);
-        ElementVo elementVo = new ElementVo();
-        Element element = iElementService.getById(elementId);
-        if (element!=null){
-            BeanUtils.copyProperties(element,elementVo);
-        }
-        return elementVo;
+        return iElementService.getElementAll(elementId);
     }
 
     //TODO：更新，伴随着模板一起更新，还会分开各自点击各自更新

@@ -13,13 +13,11 @@ import com.yanhua.rtb.mapper.ElementMapper;
 import com.yanhua.rtb.service.*;
 import com.yanhua.rtb.vo.*;
 import com.yanhua.rtb.common.EngineException;
-import com.yanhua.rtb.entity.Area;
 import com.yanhua.rtb.entity.Element;
 import com.yanhua.rtb.entity.RColumn;
 import com.yanhua.rtb.entity.Template;
 import com.yanhua.rtb.mapper.AreaMapper;
 import com.yanhua.rtb.mapper.RColumnMapper;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.yanhua.rtb.common.ResultCodeEnum.PARAM_IS_INVALID;

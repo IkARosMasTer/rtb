@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import com.yanhua.rtb.entity.ContentSpxl;
 
+import java.util.List;
+
 /**   
  * @description 联通入库表数据访问层
  *
@@ -19,5 +21,6 @@ import com.yanhua.rtb.entity.ContentSpxl;
  */
 @Mapper
 public interface ContentSpxlMapper extends BaseMapper<ContentSpxl> {
-	
+
+
 }

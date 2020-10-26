@@ -59,7 +59,7 @@
 
 			<result column="discount_settlement_param" property="discountSettlementParam" />
 
-			<result column="range" property="range" />
+			<result column="spxl_range" property="range" />
 
 			<result column="terminal_type" property="terminalType" />
 
@@ -99,15 +99,15 @@
 
 			<result column="source_company" property="sourceCompany" />
 
-			<result column="source_cpId" property="sourceCpId" />
+			<result column="source_cp_id" property="sourceCpId" />
 
 			<result column="video_level" property="videoLevel" />
 
-			<result column="cpId" property="cpId" />
+			<result column="cp_id" property="cpId" />
 
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, serial_no, operation, content_id, copyright_id, song_id, content_name, spid, cont_type, para1, publish_time, valid_date, grant_type, use_area, spread_channel, grant_times, create_time, end_date, online_date, format, fee_type, hightest_price, lowest_price, suggest_price, discount, discount_desc, settlement_param, discount_settlement_param, range, terminal_type, channel_ability, cont_level, listen_file_path, send_file_path1, label, price, spproductid, single, ability, send_file_path2, fore_show, wapicon, wwwicon, poster, ver_poster, screenshot, descripiton, source_company, source_cpId, video_level, cpId
+		id, serial_no, operation, content_id, copyright_id, song_id, content_name, spid, cont_type, para1, publish_time, valid_date, grant_type, use_area, spread_channel, grant_times, create_time, end_date, online_date, format, fee_type, hightest_price, lowest_price, suggest_price, discount, discount_desc, settlement_param, discount_settlement_param, spxl_range, terminal_type, channel_ability, cont_level, listen_file_path, send_file_path1, label, price, spproductid, single, ability, send_file_path2, fore_show, wapicon, wwwicon, poster, ver_poster, screenshot, descripiton, source_company, source_cp_id, video_level, cp_id
 	</sql>
 	
 </mapper>

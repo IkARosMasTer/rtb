@@ -66,6 +66,8 @@
         </logger>
         <logger name="org.hibernate" level="INFO">
         </logger>
+        <logger name="springfox.documentation" level="INFO">
+        </logger>
         <root level="all">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>

@@ -62,10 +62,10 @@ public interface IRColumnService extends IService<RColumn> {
      * @description: 检查区域栏目
      *      <p/>
      * @param areaId:
-     * @param columnI:
+     * @param columnId:
      * @return void
      */
-    void checkColumnAndArea(Integer areaId,Integer columnI);
+    void checkColumnAndArea(Integer areaId,Integer columnId);
 
 
     String deleteColumn(Integer columnId);

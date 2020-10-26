@@ -81,4 +81,7 @@ public class ElementVo implements Serializable {
 
     @ApiModelProperty(name = "eleTemplateVo",value = "元素（推荐位）的模板样式视图")
     private TemplateVo eleTemplateVo;
+
+    @ApiModelProperty(name = "contentSpxlVo",value = "彩铃视图")
+    private ContentSpxlVo contentSpxlVo;
 }

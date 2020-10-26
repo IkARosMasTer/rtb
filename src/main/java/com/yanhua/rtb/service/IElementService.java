@@ -80,5 +80,9 @@ public interface IElementService extends IService<Element> {
     List<Integer> updateElementAll(List<ElementVo> elementVos,Integer templetId);
 
     Map<String,Object> saveOrUpdateElements(List<Element> elements);
+
+    ElementVo getElementAll(Integer elementId);
+
+    List<ElementVo> getElementAlls (Integer templetId);
 	
 }

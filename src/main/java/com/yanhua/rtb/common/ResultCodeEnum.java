@@ -83,7 +83,8 @@ public enum ResultCodeEnum {
     USER_LOGIN_ERROR(3002,"账号不存在或密码错误"),
     USER_ACCOUNT_FORBIDDEN(3003,"账号已被禁用"),
     USER_NOT_EXIST(3004,"用户不存在"),
-    USER_HAS_EXIST(3005,"用户已存在");
+    USER_HAS_EXIST(3005,"用户已存在"),
+    ASYNC_TIMEOUT(3006,"后台处理中,请稍后查看");
 
     private Integer code;
     private String message;

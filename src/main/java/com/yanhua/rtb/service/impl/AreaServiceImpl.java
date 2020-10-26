@@ -6,10 +6,8 @@
  */
 package com.yanhua.rtb.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yanhua.rtb.common.EngineException;
 import com.yanhua.rtb.entity.Area;
-import com.yanhua.rtb.entity.User;
 import com.yanhua.rtb.mapper.AreaMapper;
 import com.yanhua.rtb.mapper.UserMapper;
 import com.yanhua.rtb.service.IAreaService;
@@ -26,7 +24,7 @@ import static com.yanhua.rtb.common.ResultCodeEnum.PARAM_IS_INVALID;
 import static com.yanhua.rtb.common.ResultCodeEnum.PARAM_NOT_COMPLETE;
 
 /**   
- * @Description 地区服务实现
+ * @description 渠道服务实现
  *
  * @version V1.0
  * @author Emiya
@@ -42,12 +40,11 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
     @Autowired
     private IUserService iUserService;
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<Area> findAll() {
 
-        List<Area> areas =  areaMapper.selectAll();
-//        areas.forEach(area -> {
+        //        areas.forEach(area -> {
 //            area.setAreaId(null);
 //        });
 //        saveOrUpdateBatch(areas);
@@ -56,7 +53,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
 //            user.setId(null);
 //        });
 //        iUserService.saveOrUpdateBatch(users);
-        return areas;
+        return areaMapper.selectAll();
     }
 
 
@@ -88,10 +85,10 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
         }
         Area area = areaMapper.selectById(areaId);
         if (area==null){
-            throw new EngineException("当前地区为空");
+            throw new EngineException("当前渠道为空");
         }
         if (area.getStatus()!=0){
-            throw new EngineException("当前地区不可用");
+            throw new EngineException("当前渠道不可用");
         }
     }
 }

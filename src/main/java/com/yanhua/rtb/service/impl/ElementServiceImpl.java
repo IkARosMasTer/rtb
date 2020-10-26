@@ -8,14 +8,14 @@ package com.yanhua.rtb.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yanhua.rtb.common.EngineException;
-import com.yanhua.rtb.entity.ContentSpxl;
-import com.yanhua.rtb.entity.Element;
-import com.yanhua.rtb.entity.RColumn;
-import com.yanhua.rtb.entity.Template;
+import com.yanhua.rtb.entity.*;
 import com.yanhua.rtb.mapper.ElementMapper;
+import com.yanhua.rtb.service.IContentSpxlDetailService;
 import com.yanhua.rtb.service.IContentSpxlService;
 import com.yanhua.rtb.service.IElementService;
 import com.yanhua.rtb.service.ITemplateService;
+import com.yanhua.rtb.vo.ContentSpxlDetailVo;
+import com.yanhua.rtb.vo.ContentSpxlVo;
 import com.yanhua.rtb.vo.ElementVo;
 import com.yanhua.rtb.vo.TemplateVo;
 import io.swagger.annotations.ApiImplicitParam;
@@ -48,6 +48,8 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
     @Autowired
     private IContentSpxlService iContentSpxlService;
     @Autowired
+    private IContentSpxlDetailService iContentSpxlDetailService;
+    @Autowired
     private ElementMapper elementMapper;
 
     @Override
@@ -66,7 +68,8 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
             log.warn("saveElement=========>无对应的彩铃内容:模板id{}",templetId);
             throw new EngineException("模板"+templetId+"无对应的彩铃内容");
         }
-        elementVo.setElementName(contentSpxl.getContentName());
+        //todo:
+//        elementVo.setElementName(contentSpxl.getContentName());
         elementVo.setElementOrder(countElementNumByTempletId(templetId)+1);
         Element element = new Element();
         BeanUtils.copyProperties(elementVo,element);
@@ -233,5 +236,36 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
             }
         }
        return null;
+    }
+
+
+    @Override
+    public ElementVo getElementAll(Integer elementId) {
+        ElementVo elementVo = new ElementVo();
+        Element element = getById(elementId);
+        if (element!=null){
+            BeanUtils.copyProperties(element,elementVo);
+            String contentSpxlId = element.getContentSpxlId();
+            ContentSpxl contentSpxl = iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,contentSpxlId).last("LIMIT 1"));
+            if (contentSpxl!=null){
+                ContentSpxlVo contentSpxlVo = new ContentSpxlVo();
+                BeanUtils.copyProperties(contentSpxl,contentSpxlVo);
+                List<ContentSpxlDetail> contentSpxlDetails = iContentSpxlDetailService.list(new QueryWrapper<ContentSpxlDetail>().lambda().eq(ContentSpxlDetail::getContentId,contentSpxlId));
+                List<ContentSpxlDetailVo> contentSpxlDetailVos = contentSpxlDetails.stream().filter(Objects::nonNull).map(contentSpxlDetail -> {
+                    ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
+                    BeanUtils.copyProperties(contentSpxlDetail,contentSpxlDetailVo);
+                    return contentSpxlDetailVo;
+                }).collect(Collectors.toList());
+                contentSpxlVo.setFileList(contentSpxlDetailVos);
+                elementVo.setContentSpxlVo(contentSpxlVo);
+            }
+        }
+        return elementVo;
+
+    }
+
+    @Override
+    public List<ElementVo> getElementAlls(Integer templetId) {
+        return elementMapper.getElementResult(templetId);
     }
 }

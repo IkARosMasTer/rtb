@@ -11,11 +11,11 @@
 package com.yanhua.rtb.config;
 
 import com.yanhua.rtb.config.interceptor.ResponseResultInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor;
+import org.springframework.web.servlet.config.annotation.*;
 
 /**
  * 〈功能简述〉<br>
@@ -67,4 +67,27 @@ public class WebConfig implements WebMvcConfigurer {
 //                .maxAge(3600)
 //                .allowCredentials(true);
 //    }
+
+    @Override
+    public void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(3 * 1000L);
+        configurer.registerCallableInterceptors(timeoutInterceptor());
+        configurer.setTaskExecutor(threadPoolTaskExecutor());
+    }
+    @Bean
+    public TimeoutCallableProcessingInterceptor timeoutInterceptor() {
+        return new TimeoutCallableProcessingInterceptor();
+    }
+    @Bean
+    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
+        t.setCorePoolSize(Runtime.getRuntime().availableProcessors());
+        t.setMaxPoolSize(Runtime.getRuntime().availableProcessors()*5);
+        t.setQueueCapacity(Runtime.getRuntime().availableProcessors()*2);
+        t.setWaitForTasksToCompleteOnShutdown(true);
+        t.setThreadNamePrefix("MyAsyncThreadPool-");
+        System.out.println("==============================开启我的异步请求线程池================================>");
+        return t;
+    }
+
 }

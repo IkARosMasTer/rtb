@@ -34,9 +34,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.midi.MidiFileFormat;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 
+import static com.yanhua.rtb.common.ResultCodeEnum.ASYNC_TIMEOUT;
 import static com.yanhua.rtb.config.interceptor.ResponseResultInterceptor.RESPONSE_RESULT_ANN;
 
 
@@ -101,7 +104,7 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
         if (ex instanceof BindException) {
             result = new Result<>(1000);
             BindingResult bindingResult = ((BindException) ex).getBindingResult();
-            if (bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 fieldErrors.forEach(fieldError -> {
                     //日志打印不符合校验的字段名和错误提示
@@ -110,10 +113,10 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
                 result = new Result<>(1000, Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
             }
             // 校验HTTP请求参数时的异常
-        }else if (ex instanceof MethodArgumentNotValidException) {
+        } else if (ex instanceof MethodArgumentNotValidException) {
             result = new Result<>(1000);
             BindingResult bindingResult = ((MethodArgumentNotValidException) ex).getBindingResult();
-            if (bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 List<FieldError> fieldErrors = bindingResult.getFieldErrors();
                 fieldErrors.forEach(fieldError -> {
                     //日志打印不符合校验的字段名和错误提示
@@ -121,8 +124,12 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
                 });
                 result = new Result<>(1000, Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
             }
+            //HTTP请求异步执行超时则直接返回信息
+        }else if (ex instanceof TimeoutException){
+            result = new Result<>(3006,ex.getMessage());
+            log.warn("---------------->异步任务提前返回信息");
             // 运行时程序全局异常
-        } else if (ex instanceof EngineException) {
+        }else if (ex instanceof EngineException) {
             result = Result.fail((EngineException) ex);
             log.warn("--------------->[全局业务异常]\r\n业务编码：{}\r\n异常记录：{}", result.getCode(), result.getMessage());
         // 连全局异常都未知的错误
