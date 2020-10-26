@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanhua.rtb.mapper.AreaMapper">
+
+	<resultMap id="BaseResultMap" type="com.yanhua.rtb.entity.Area">
+			<result column="channel_id" property="channelId" />
+
+			<result column="channel_code" property="channelCode" />
+
+			<result column="operator" property="operator" />
+
+			<result column="area_title" property="areaTitle" />
+
+			<result column="area_code" property="areaCode" />
+
+			<result column="company" property="company" />
+
+			<result column="create_time" property="createTime" />
+
+			<result column="update_time" property="updateTime" />
+
+			<result column="status" property="status" />
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		channel_id, channel_code, operator, area_title, area_code, company, create_time, update_time, status
+	</sql>
+
+
+	<!-- 查找渠道信息 -->
+	<select id="selectAll" resultMap="BaseResultMap" useCache="true">
+		select
+		<include refid="Base_Column_List" />
+		from area
+		where status=0
+	</select>
+</mapper>
