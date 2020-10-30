@@ -22,19 +22,22 @@ import com.yanhua.rtb.util.FileUtil;
 import com.yanhua.rtb.util.HttpTools;
 import com.yanhua.rtb.util.Md5;
 import com.yanhua.rtb.util.URLStreamTool;
+import com.yanhua.rtb.vo.ContentSpxlVo;
+import com.yanhua.rtb.vo.CtccContentSpxlVo;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -65,6 +68,15 @@ public class WarehousingServiceImpl implements WarehousingService {
     @Value("${warehousing.cnUnicom.user}")
     private String cnUnicomUser;
 
+    @Value("${warehousing.chinaMobile.url}")
+    private String chinaMobileUrl;
+
+    @Value("${warehousing.chinaMobile.tokenUrl}")
+    private String chinaMobileTokenUrl;
+
+    @Value("${warehousing.chinaMobile.channelCode}")
+    private String channelCode;
+
     @Autowired
     private Environment environment;
 
@@ -81,39 +93,33 @@ public class WarehousingServiceImpl implements WarehousingService {
             //循环访问获取数据
             try {
                 rets = copyrightIds.stream().filter(StringUtils::isNotBlank).map(s -> {
-                    String ret = buildingUrl(s);
-                    System.out.println(ret);
+                    String ret = buildingCuccUrl(s);
+//                    System.out.println(ret);
                     if (StringUtils.isNotEmpty(ret)){
                         JSONObject jsonObject = JSON.parseObject(ret);
                         if (jsonObject.containsKey("code")&& "000".equals(jsonObject.get("code"))){
                             JSONArray jsonArray = jsonObject.getJSONArray("contentSpxlData");
                             List<ContentSpxl> contentSpxls = JSONArray.parseArray(jsonArray.toString(),ContentSpxl.class);
-                            StringBuffer stringBuffer = new StringBuffer();
+                            StringBuilder stringBuffer = new StringBuilder();
+                            String finalS = s;
                             contentSpxls.stream().filter(Objects::nonNull).forEach(contentSpxl -> {
-                                List<ContentSpxlDetail> contentSpxlDetails = contentSpxl.getFileList();
-                                try{
-                                    //将图片、文件保存本地服务器
-                                    pullPoster(contentSpxl);
-                                    pullVod(contentSpxlDetails,contentSpxl.getContentId());
-                                    ContentSpxl contentSpxl1 = iContentSpxlService.selectByWrapper(contentSpxl.getContentId(),contentSpxl.getCopyrightId());
-                                    if (contentSpxl1!=null){
-                                        //说明已存在，则更新
-                                        contentSpxl.setId(contentSpxl1.getId());
-                                        stringBuffer.append(iContentSpxlService.update(contentSpxl, contentSpxlDetails));
-                                    }else {
-                                        //新增
-                                        stringBuffer.append(iContentSpxlService.save(contentSpxl,contentSpxlDetails));
-                                    }
-                                }catch (EngineException e){
-                                    //操作数据库出错，跳过该条
-                                    stringBuffer.append("copyrightId:").append(contentSpxl.getCopyrightId()).append(",").append(e.getMessage());
-                                    log.error("联通入库出错=============>copyrightId:{},{}",contentSpxl.getCopyrightId(),e.getMessage());
+                                String cpId = null;
+                                cpId = contentSpxl.getCpId()==null?StringUtils.substring(finalS,0,8): String.valueOf(contentSpxl.getCpId());
+                                if ("80721000".equals(cpId)){
+                                    //属 粒子文化
+                                    contentSpxl.setAttribution(2);
+                                }else if ("79858000".equals(cpId)){
+                                    //属 岩华
+                                    contentSpxl.setAttribution(1);
+                                }else {
+                                    //属 其他
+                                    contentSpxl.setAttribution(9);
                                 }
+                                contentSpxl.setOperator(2);
+                                operate(stringBuffer,contentSpxl);
                             });
                             s = stringBuffer.toString();
-//                            List<ContentSpxlDetail> contentSpxlDetails = contentSpxls.stream().filter(Objects::nonNull).peek(contentSpxl -> {
-//                                contentSpxl.getFileList().stream().filter(Objects::nonNull).forEach(contentSpxlDetail -> contentSpxlDetail.setContentId(contentSpxl.getContentId()));
-//                            }).flatMap(contentSpxl -> contentSpxl.getFileList().stream()).collect(Collectors.toList());
+                            log.info("联通入库记录================>{}",s);
                         }
                     }
                     return s;
@@ -127,6 +133,63 @@ public class WarehousingServiceImpl implements WarehousingService {
         return rets;
     }
 
+    @Override
+    public List<String> getChinaMobile(List<Map<String,String>> copyrightIds) {
+        List<String> retList = new ArrayList<>();
+        if (copyrightIds!=null&&copyrightIds.size()>0){
+            try {
+                retList = copyrightIds.stream().filter(Objects::nonNull).map(s -> {
+                    StringBuilder stringBuffer = new StringBuilder(s.get("copyrightId"));
+                    ContentSpxlVo contentSpxlVo = buildingCtccUrl(s);
+                    if (contentSpxlVo!=null){
+                        ContentSpxl contentSpxl = new ContentSpxl();
+                        BeanUtils.copyProperties(contentSpxlVo,contentSpxl);
+                        contentSpxl.setOperator(1);
+                        contentSpxl.setCopyrightId(s.get("copyrightId"));
+                        List<ContentSpxlDetail> contentSpxlDetails = contentSpxlVo.getFileList().stream().filter(Objects::nonNull).map(contentSpxlDetailVo -> {
+                            ContentSpxlDetail contentSpxlDetail = new ContentSpxlDetail();
+                            BeanUtils.copyProperties(contentSpxlDetailVo,contentSpxlDetail);
+                            return contentSpxlDetail;
+                        }).collect(Collectors.toList());
+                        contentSpxl.setFileList(contentSpxlDetails);
+                        //数据库操作
+                        operate(stringBuffer,contentSpxl);
+                    }
+                    log.info("移动入库记录================>{}",stringBuffer.toString());
+                    return stringBuffer.toString();
+                }).collect(Collectors.toList());
+            }catch (Exception e ){
+                e.printStackTrace();
+                log.error("移动接口批量入库异常!");
+                throw new EngineException("移动接口批量入库异常!"+e.getMessage());
+            }
+        }
+        retList.forEach(System.out::println);
+        return retList;
+    }
+
+    private void operate (StringBuilder stringBuilder, ContentSpxl contentSpxl){
+        try{
+            //将图片、文件保存本地服务器
+//                                    pullPoster(contentSpxl);
+//                                    pullVod(contentSpxlDetails,contentSpxl.getContentId());
+            ContentSpxl contentSpxl1 = iContentSpxlService.selectByWrapper(contentSpxl.getContentId(),contentSpxl.getCopyrightId());
+            if (contentSpxl1!=null){
+                //说明已存在，则更新
+                contentSpxl.setId(contentSpxl1.getId());
+                stringBuilder.append(iContentSpxlService.update(contentSpxl, contentSpxl.getFileList()));
+            }else {
+                //新增
+                stringBuilder.append(iContentSpxlService.save(contentSpxl,contentSpxl.getFileList()));
+            }
+        }catch (Exception e){
+            //操作数据库出错，跳过该条
+            stringBuilder.append("copyrightId:").append(contentSpxl.getCopyrightId()).append(",").append(e.getMessage());
+            log.error("视频彩铃入库出错=============>copyrightId:{},{}",contentSpxl.getCopyrightId(),e.getMessage());
+        }
+    }
+
+
     /**
      *
      * @description: 获取联通平台彩铃数据
@@ -134,16 +197,88 @@ public class WarehousingServiceImpl implements WarehousingService {
      * @param copyrightId:
      * @return java.lang.String
      */
-    private String buildingUrl(String copyrightId){
+    private String buildingCuccUrl(String copyrightId){
         Date date = new Date();
-        String timestamp = simpleDateFormat.format(date);
-        String digest = "appkey"+cnUnicomCode+"timestamp"+timestamp+cnUnicomMd5;
-        digest = Md5.crypt(digest);
-        String url = cnUnicomUrl+"?appkey="+cnUnicomCode+"&timestamp="+timestamp+"&digest="+digest;
-        String body = "{\"batch\":\"\",\"channelId\":\""+cnUnicomCode+"\",\"copyrightIds\":\""+copyrightId+"\",\"dataIds\":\"\",\"endTime\":\"\",\"pageEnd\":100,\"pageStart\":1,\"startTime\":\"\",\"types\":\"contentSpxl\"}";
-        System.out.println(url);
-        System.out.println(body);
-        return HttpTools.doPost(url,body);
+        try {
+            String timestamp = simpleDateFormat.format(date);
+            String digest = "appkey"+cnUnicomCode+"timestamp"+timestamp+cnUnicomMd5;
+            digest = Md5.crypt(digest);
+            String url = cnUnicomUrl+"?appkey="+cnUnicomCode+"&timestamp="+timestamp+"&digest="+digest;
+            String body = "{\"batch\":\"\",\"channelId\":\""+cnUnicomCode+"\",\"copyrightIds\":\""+copyrightId+"\",\"dataIds\":\"\",\"endTime\":\"\",\"pageEnd\":100,\"pageStart\":1,\"startTime\":\"\",\"types\":\"contentSpxl\"}";
+            System.out.println(url);
+            System.out.println(body);
+            return HttpTools.doPost(url,body);
+        }catch (Exception e){
+            log.error("联通入库出错=============>获取平台彩铃异常,copyrightId{}跳过,{}",copyrightId,e.getMessage());
+        }
+        return null;
+    }
+    /**
+     *
+     * @description: 获取移动平台彩铃数据
+     *      <p/>
+     * @param map:
+     * @return java.lang.String
+     */
+    private ContentSpxlVo buildingCtccUrl(Map<String,String> map){
+        String copyrightId = map.get("copyrightId");
+        //分类标签
+        String label = map.get("label");
+        try {
+
+
+            String body = "{\n" +
+                    "    \"msisdn\": 15906632054\n" +
+                    "}";
+//            String ret = HttpTools.doPost(chinaMobileTokenUrl,body);
+            String ret = "{\n" +
+                    "    \"code\": 200,\n" +
+                    "    \"data\": {\n" +
+                    "        \"resCode\": \"000000\",\n" +
+                    "        \"msisdn\": \"182*****769\",\n" +
+                    "        \"resMsg\": \"【OPEN】操作成功\",\n" +
+                    "        \"token\": \"19f9d0aa65454c48aba9a3d3c070fb3e\"\n" +
+                    "    },\n" +
+                    "    \"mes\": \"ok\"\n" +
+                    "}";
+            String token = "";
+            if (StringUtils.isNotEmpty(ret)) {
+                JSONObject jsonObject = JSON.parseObject(ret);
+                if (jsonObject.containsKey("code")&&((Integer) jsonObject.get("code")==200)){
+                    JSONObject jsonObject1 = jsonObject.getJSONObject("data");
+                    if (jsonObject1!=null&&jsonObject1.containsKey("token")){
+                        token = (String) jsonObject1.get("token");
+                    }
+                }
+            }
+            if (StringUtils.isNotBlank(token)) {
+                String data = "{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":" + channelCode + ",\"token\":" + token + ",\"vrbtId\":" + copyrightId + "}";
+//                String ff = "https://m.12530.com/order/rest/vrbt/product/query.do?data=";
+//                String gg = "{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":\"00210OX\",\"token\":\"8bf9adf62276420d9fa4c229d8f3adbd\",\"vrbtId\":\"699052T2491M\"}";
+                data = URLEncoder.encode(data,"utf-8");
+//                ff = ff+gg;
+                String ret1 = HttpTools.doHttpGet(chinaMobileUrl + data);
+                System.out.println("ff="+chinaMobileUrl + data);
+//                String ret1 = HttpTools.doHttpGet(ff);
+//                System.out.println("ret="+ret1);
+                if (StringUtils.isNotBlank(ret1)){
+                    JSONObject jsonObject = JSON.parseObject(ret1);
+                    if (jsonObject.containsKey("resCode")&&"000000".equals(jsonObject.get("resCode"))){
+                        CtccContentSpxlVo ctccContentSpxlVo = JSONObject.parseObject(String.valueOf(jsonObject.getJSONObject("vrbtProduct")),CtccContentSpxlVo.class);
+                        if (ctccContentSpxlVo!=null){
+                            return new ContentSpxlVo(ctccContentSpxlVo,label,copyrightId);
+                        }
+                    }
+                }
+            }else {
+                log.error("移动入库出错=============>获取token失败,copyrightId:{}跳过",copyrightId);
+            }
+        }catch (ParseException e){
+            log.error("移动入库出错=============>copyrightId:{}跳过,日期转换异常{}",copyrightId,e.getMessage());
+        }catch (Exception e) {
+            log.error("移动入库出错=============>copyrightId:{}跳过,未知异常{}",copyrightId,e.getMessage());
+        }
+        return null;
     }
 
     /**

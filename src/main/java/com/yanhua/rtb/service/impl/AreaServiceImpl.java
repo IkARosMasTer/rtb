@@ -76,14 +76,14 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
     }
 
     @Override
-    public void checkArea(Integer areaId) {
-        if (areaId==null) {
+    public void checkArea(Integer channelId) {
+        if (channelId==null) {
             throw new EngineException(PARAM_NOT_COMPLETE);
         }
-        if (areaId<0){
+        if (channelId<0){
             throw new EngineException(PARAM_IS_INVALID);
         }
-        Area area = areaMapper.selectById(areaId);
+        Area area = areaMapper.selectById(channelId);
         if (area==null){
             throw new EngineException("当前渠道为空");
         }

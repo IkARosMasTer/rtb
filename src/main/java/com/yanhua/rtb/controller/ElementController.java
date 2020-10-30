@@ -53,14 +53,14 @@ public class ElementController {
 
 
     @ApiOperation(value = "新增单个推荐位",httpMethod = "POST",notes = "生成推荐位id,返回推荐位视图")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}",method = RequestMethod.POST)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}",method = RequestMethod.POST)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public ElementVo saveElement(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid ElementVo elementVo){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public ElementVo saveElement(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid ElementVo elementVo){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         iTempletService.checkTemplet(templetId);
         elementVo.setColumnId(templetId);
         if (elementVo.getCreateTime()==null){
@@ -70,61 +70,61 @@ public class ElementController {
     }
 
     @ApiOperation(value = "删除单个推荐位",httpMethod = "GET",notes = "根据推荐位id,删除推荐位")
-    @RequestMapping(value = "/delete/{areaId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/delete/{channelId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "elementId", value = "推荐位id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public String deleteElement(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @PathVariable Integer elementId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public String deleteElement(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId, @PathVariable Integer elementId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         //检查
         iTempletService.checkTemplet(templetId);
         return iElementService.deleteElement(elementId);
     }
     @ApiOperation(value = "删除模板下所有推荐位",httpMethod = "GET",notes = "根据模板id,删除所有推荐位")
-    @RequestMapping(value = "/delete/{areaId}/{columnId}/{templetId}/",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/delete/{channelId}/{columnId}/{templetId}/",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public String deleteElementAll(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public String deleteElementAll(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         //检查
         iTempletService.checkTemplet(templetId);
         return iElementService.deleteElementAll(templetId);
     }
     @ApiOperation(value = "查询模板下所有推荐位",httpMethod = "GET",notes = "根据模板id,查询所有推荐位")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}/",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public List<ElementVo> selectElementAll(@PathVariable Integer areaId,  @PathVariable Integer columnId,@PathVariable Integer templetId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public List<ElementVo> selectElementAll(@PathVariable Integer channelId,  @PathVariable Integer columnId,@PathVariable Integer templetId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         //检查
         iTempletService.checkTemplet(templetId);
-        List<Element> elements = iElementService.list(new QueryWrapper<Element>().lambda().eq(Element::getColumnId,templetId));
-        List<ElementVo> elementVos =  elements.stream().filter(Objects::nonNull).map(element -> {
-            ElementVo elementVo = new ElementVo();
-            BeanUtils.copyProperties(element,elementVo);
-            return elementVo;
-        }).collect(Collectors.toList());
+//        List<Element> elements = iElementService.list(new QueryWrapper<Element>().lambda().eq(Element::getColumnId,templetId));
+//        List<ElementVo> elementVos =  elements.stream().filter(Objects::nonNull).map(element -> {
+//            ElementVo elementVo = new ElementVo();
+//            BeanUtils.copyProperties(element,elementVo);
+//            return elementVo;
+//        }).collect(Collectors.toList());
         return iElementService.getElementAlls(templetId);
     }
     @ApiOperation(value = "查询模板下单个推荐位",httpMethod = "GET",notes = "根据模板id,查询单个推荐位")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "elementId", value = "推荐位id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public ElementVo selectElement(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @PathVariable Integer elementId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public ElementVo selectElement(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId, @PathVariable Integer elementId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         //检查
         iTempletService.checkTemplet(templetId);
         return iElementService.getElementAll(elementId);
@@ -134,15 +134,15 @@ public class ElementController {
 
 
     @ApiOperation(value = "更新单个推荐位",httpMethod = "PUT",notes = "根据推荐位id,更新推荐位")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.PUT)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}/{elementId}",method = RequestMethod.PUT)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "elementId", value = "推荐位id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public String updateElement(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @PathVariable Integer elementId, @RequestBody @Valid ElementVo elementVo){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public String updateElement(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId, @PathVariable Integer elementId, @RequestBody @Valid ElementVo elementVo){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         iTempletService.checkTemplet(templetId);
         elementVo.setColumnId(templetId);
         if (elementVo.getUpdateTime()==null){
@@ -153,14 +153,14 @@ public class ElementController {
     }
 
     @ApiOperation(value = "更新所有推荐位",httpMethod = "PUT",notes = "根据模板id,更新推荐位")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}/",method = RequestMethod.PUT)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}/",method = RequestMethod.PUT)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public String  updateElementAll(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid List<ElementVo> elementVos){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public String  updateElementAll(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid List<ElementVo> elementVos){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         iTempletService.checkTemplet(templetId);
 
         return "成功更新"+iElementService.updateElementAll(elementVos,templetId)+"条推荐位";

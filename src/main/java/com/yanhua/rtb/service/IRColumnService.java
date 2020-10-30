@@ -23,20 +23,20 @@ public interface IRColumnService extends IService<RColumn> {
      *
      * @description: 获取栏目、专题、元素所有数据
      *      <p/>
-     * @param areaId:
+     * @param channelId:
      * @param columnId:
      * @param startPage:
      * @param pageSize:
      */
-    List<ColumnVo> getAllColumnVoList(Integer areaId, Integer columnId, Integer startPage, Integer pageSize);
+    List<ColumnVo> getAllColumnVoList(Integer channelId, Integer columnId, Integer startPage, Integer pageSize);
 
     /**
      *
      * @description: 获取地区栏目
      *      <p/>
-     * @param areaId:
+     * @param channelId:
      */
-    List<ColumnVo> getColumnVoList(Integer areaId);
+    List<ColumnVo> getColumnVoList(Integer channelId);
 
 
     /**
@@ -61,11 +61,11 @@ public interface IRColumnService extends IService<RColumn> {
      *
      * @description: 检查区域栏目
      *      <p/>
-     * @param areaId:
+     * @param channelId:
      * @param columnId:
      * @return void
      */
-    void checkColumnAndArea(Integer areaId,Integer columnId);
+    void checkColumnAndArea(Integer channelId,Integer columnId);
 
 
     String deleteColumn(Integer columnId);

@@ -57,43 +57,43 @@ public class RColumnController {
 
 
     @ApiOperation(value = "查询地区下栏目的所有信息",httpMethod = "GET",notes = "默认返回该栏目以及其下的专题以及元素")
-    @RequestMapping(value = "/{areaId}/{columnId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="query", name = "level", value = "层级", required = false, dataType = "Long"),
             @ApiImplicitParam(paramType="query", name = "startPage", value = "起始页", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="query", name = "pageSize", value = "请求的记录数", required = true, dataType = "Long"),
     })
     @ResponseBody
-    public List<ColumnVo> findColumnAllByAreaIdAndColumnId(@PathVariable Integer areaId, @PathVariable Integer columnId,
+    public List<ColumnVo> findColumnAllByAreaIdAndColumnId(@PathVariable Integer channelId, @PathVariable Integer columnId,
                                                            @RequestParam(required = false) Integer level, @RequestParam Integer startPage, @RequestParam Integer pageSize ){
         //检查
-        columnService.checkColumnAndArea(areaId,columnId);
+        columnService.checkColumnAndArea(channelId,columnId);
         if (startPage==null||startPage<0||pageSize==null||pageSize<0){
             throw new EngineException(PARAM_IS_BLANK);
         }
-        return columnService.getAllColumnVoList(areaId,columnId,startPage,pageSize);
+        return columnService.getAllColumnVoList(channelId,columnId,startPage,pageSize);
     }
 
-    @ApiOperation(value = "查询地区下的所有栏目信息",httpMethod = "GET",notes = "默认返回该地区下的所有栏目集合")
-    @RequestMapping(value = "/{areaId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @ApiOperation(value = "查询地区下的所有栏目信息",httpMethod = "GET",notes = "默认返回该渠道下的所有栏目集合")
+    @RequestMapping(value = "/{channelId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="query", name = "level", value = "层级", required = false, dataType = "Long")
     })
-    public List<ColumnVo> findColumnByAreaId(@PathVariable Integer areaId
+    public List<ColumnVo> findColumnByAreaId(@PathVariable Integer channelId
             , @RequestParam(required = false) Integer level){
-        areaService.checkArea(areaId);
-        return columnService.getColumnVoList(areaId);
+        areaService.checkArea(channelId);
+        return columnService.getColumnVoList(channelId);
     }
 
     @ApiOperation(value = "更新/新增单个栏目基础信息",httpMethod = "POST",notes = "更新/新增元數據,生成栏目id")
-    @RequestMapping(value = "/{areaId}",method = RequestMethod.POST)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long")
+    @RequestMapping(value = "/{channelId}",method = RequestMethod.POST)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long")
     })
-    public ColumnVo saveOrUpdateColumnVo(@PathVariable Integer areaId,@RequestBody  @Valid ColumnVo columnVo){
+    public ColumnVo saveOrUpdateColumnVo(@PathVariable Integer channelId,@RequestBody  @Valid ColumnVo columnVo){
         //todo:RequestBodyAdvice 来统一做创建时间或更新时间判断
-        areaService.checkArea(areaId);
-        columnVo.setAreaId(areaId);
+        areaService.checkArea(channelId);
+        columnVo.setChannelId(channelId);
         if (columnVo.getCreateTime()==null){
             columnVo.setCreateTime(new Date());
         }
@@ -112,30 +112,30 @@ public class RColumnController {
             columnVo.setColumnId(rColumn.getColumnId());
             return columnVo;
         }else {
-            log.error("更新/新增某个栏目基础信息==========>失败,areaId{}",areaId);
+            log.error("更新/新增某个栏目基础信息==========>失败,channelId{}",channelId);
             throw new EngineException("更新/新增栏目基础信息失败");
         }
     }
 
     @ApiOperation(value = "更新/新增某个栏目的所有信息",httpMethod = "POST",notes = "更新/新增元數據,生成栏目id")
-    @RequestMapping(value = "/{areaId}/overAll",method = RequestMethod.POST)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long")
+    @RequestMapping(value = "/{channelId}/overAll",method = RequestMethod.POST)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long")
     })
-    public String saveOrUpdateColumnAll(@PathVariable Integer areaId,@RequestBody @Valid ColumnVo columnVo){
+    public String saveOrUpdateColumnAll(@PathVariable Integer channelId,@RequestBody @Valid ColumnVo columnVo){
         //todo:RequestBodyAdvice 来统一做创建时间或更新时间判断
-        areaService.checkArea(areaId);
-        columnVo.setAreaId(areaId);
+        areaService.checkArea(channelId);
+        columnVo.setChannelId(channelId);
         return columnService.saveOrUpdateColumnVo(columnVo);
     }
 
     @ApiOperation(value = "删除某个栏目的所有信息",httpMethod = "GET",notes = "删除元數據以及相关数据,返回信息")
-    @RequestMapping(value = "/delete/{areaId}/{columnId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/delete/{channelId}/{columnId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
 
     })
-    public String deleteColumnAll(@PathVariable Integer areaId,@PathVariable Integer columnId){
-        columnService.checkColumnAndArea(areaId, columnId);
+    public String deleteColumnAll(@PathVariable Integer channelId,@PathVariable Integer columnId){
+        columnService.checkColumnAndArea(channelId, columnId);
         return columnService.deleteColumn(columnId);
     }
 

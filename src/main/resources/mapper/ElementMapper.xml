@@ -171,6 +171,10 @@
 			<result column="video_level6" property="videoLevel" />
 
 			<result column="cp_id6" property="cpId" />
+
+			<result column="attribution6" property="attribution" />
+
+			<result column="operator6" property="operator" />
 			<collection property="fileList" ofType="com.yanhua.rtb.vo.ContentSpxlDetailVo" select="com.yanhua.rtb.mapper.ContentSpxlDetailMapper.getContentSpxlDetailResult" column="content_id6=content_id6"/>
 		</association>
 	</resultMap>
@@ -243,7 +247,9 @@
 	        h.source_company as source_company6,
 	        h.source_cp_id as source_cp_id6,
 	        h.video_level as video_level6,
-	        h.cp_id as cp_id6
+	        h.cp_id as cp_id6,
+	        h.attribution as attribution6,
+	        h.operator as operator6
 
 
 		from

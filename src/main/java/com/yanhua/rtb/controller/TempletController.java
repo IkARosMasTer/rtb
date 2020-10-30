@@ -53,15 +53,15 @@ public class TempletController {
     private ITempletService iTempletService;
 
     @ApiOperation(value = "新增单个模板",httpMethod = "POST",notes = "生成模板id,返回模板视图")
-    @RequestMapping(value = "/{areaId}/{columnId}",method = RequestMethod.POST)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}",method = RequestMethod.POST)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public TempletVo saveTempletVo(@PathVariable Integer areaId, @PathVariable Integer columnId, @RequestBody  @Valid TempletVo templetVo){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public TempletVo saveTempletVo(@PathVariable Integer channelId, @PathVariable Integer columnId, @RequestBody  @Valid TempletVo templetVo){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         templetVo.setParColumnId(columnId);
-        templetVo.setAreaId(areaId);
+        templetVo.setChannelId(channelId);
         if (templetVo.getCreateTime()==null){
             templetVo.setCreateTime(new Date());
         }
@@ -69,27 +69,27 @@ public class TempletController {
     }
 
     @ApiOperation(value = "删除单个模板",httpMethod = "GET",notes = "根据模板id,删除模板")
-    @RequestMapping(value = "/delete/{areaId}/{columnId}/{templetId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/delete/{channelId}/{columnId}/{templetId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public String deleteTempletVo(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public String deleteTempletVo(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         return iTempletService.deleteTemplet(templetId);
     }
 
     @ApiOperation(value = "更新单个模板",httpMethod = "PUT",notes = "根据模板id,更新模板")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}",method = RequestMethod.PUT)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}",method = RequestMethod.PUT)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public String updateTempletVo(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid TempletVo templetVo){
-        irColumnService.checkColumnAndArea(areaId,columnId);
-        templetVo.setAreaId(areaId);
+    public String updateTempletVo(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId, @RequestBody @Valid TempletVo templetVo){
+        irColumnService.checkColumnAndArea(channelId,columnId);
+        templetVo.setChannelId(channelId);
         templetVo.setParColumnId(columnId);
         templetVo.setColumnId(templetId);
         if (templetVo.getUpdateTime()==null){
@@ -98,14 +98,14 @@ public class TempletController {
         return iTempletService.updateTemplet(templetVo);
     }
     @ApiOperation(value = "查询单个模板",httpMethod = "GET",notes = "根据模板id,查询模板")
-    @RequestMapping(value = "/{areaId}/{columnId}/{templetId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
     })
     @ResponseBody
-    public TempletVo selectTempletVo(@PathVariable Integer areaId, @PathVariable Integer columnId, @PathVariable Integer templetId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public TempletVo selectTempletVo(@PathVariable Integer channelId, @PathVariable Integer columnId, @PathVariable Integer templetId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         RColumn rColumn = irColumnService.getById(templetId);
         TempletVo templetVo = new TempletVo();
         BeanUtils.copyProperties(rColumn,templetVo);
@@ -113,13 +113,13 @@ public class TempletController {
     }
 
     @ApiOperation(value = "查询所有模板",httpMethod = "GET",notes = "根据栏目id,查询所有模板")
-    @RequestMapping(value = "/{areaId}/{columnId}",method = RequestMethod.GET)
-    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "areaId", value = "地区id", required = true, dataType = "Long"),
+    @RequestMapping(value = "/{channelId}/{columnId}",method = RequestMethod.GET)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
     })
     @ResponseBody
-    public List<TempletVo> selectTempletVo(@PathVariable Integer areaId, @PathVariable Integer columnId){
-        irColumnService.checkColumnAndArea(areaId,columnId);
+    public List<TempletVo> selectTempletVo(@PathVariable Integer channelId, @PathVariable Integer columnId){
+        irColumnService.checkColumnAndArea(channelId,columnId);
         List<RColumn> rColumns = irColumnService.list(new QueryWrapper<RColumn>().lambda().eq(RColumn::getParColumnId,columnId));
         return rColumns.stream().filter(Objects::nonNull).map(rColumn -> {
             TempletVo templetVo = new TempletVo();

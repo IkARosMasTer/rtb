@@ -59,7 +59,7 @@
 
 			<result column="discount_settlement_param" property="discountSettlementParam" />
 
-			<result column="spxl_range" property="range" />
+			<result column="spxl_range" property="spxlRange" />
 
 			<result column="terminal_type" property="terminalType" />
 
@@ -105,9 +105,223 @@
 
 			<result column="cp_id" property="cpId" />
 
+			<result column="operator" property="operator" />
+			<result column="attribution" property="attribution" />
+
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, serial_no, operation, content_id, copyright_id, song_id, content_name, spid, cont_type, para1, publish_time, valid_date, grant_type, use_area, spread_channel, grant_times, create_time, end_date, online_date, format, fee_type, hightest_price, lowest_price, suggest_price, discount, discount_desc, settlement_param, discount_settlement_param, spxl_range, terminal_type, channel_ability, cont_level, listen_file_path, send_file_path1, label, price, spproductid, single, ability, send_file_path2, fore_show, wapicon, wwwicon, poster, ver_poster, screenshot, descripiton, source_company, source_cp_id, video_level, cp_id
+		id, serial_no, operation, content_id, copyright_id, song_id, content_name, spid, cont_type, para1, publish_time, valid_date, grant_type, use_area, spread_channel, grant_times, create_time, end_date, online_date, format, fee_type, hightest_price, lowest_price, suggest_price, discount, discount_desc, settlement_param, discount_settlement_param, spxl_range, terminal_type, channel_ability, cont_level, listen_file_path, send_file_path1, label, price, spproductid, single, ability,
+		send_file_path2, fore_show, wapicon, wwwicon, poster, ver_poster, screenshot, descripiton, source_company, source_cp_id, video_level, cp_id, attribution, operator
 	</sql>
-	
+	<sql id="Page_Column_List">
+		h.id as id6,
+	        h.serial_no as serial_no6,
+	        h.operation as operation6,
+	        h.content_id as content_id6,
+	        h.copyright_id as copyright_id6,
+	        h.song_id as song_id6,
+	        h.content_name as content_name6,
+	        h.spid as spid6,
+	        h.cont_type as cont_type6,
+	        h.para1 as para16,
+	        h.publish_time as publish_time6,
+	        h.valid_date as valid_date6,
+	        h.grant_type as grant_type6,
+	        h.use_area as use_area6,
+	        h.spread_channel as spread_channel6,
+	        h.grant_times as grant_times6,
+	        h.create_time as create_time6,
+	        h.end_date as end_date6,
+	        h.online_date as online_date6,
+	        h.format as format6,
+	        h.fee_type as fee_type6,
+	        h.hightest_price as hightest_price6,
+	        h.lowest_price as lowest_price6,
+	        h.suggest_price as suggest_price6,
+	        h.discount as discount6,
+	        h.discount_desc as discount_desc6,
+	        h.settlement_param as settlement_param6,
+	        h.discount_settlement_param as discount_settlement_param6,
+	        h.spxl_range as spxl_range6,
+	        h.terminal_type as terminal_type6,
+	        h.channel_ability as channel_ability6,
+	        h.cont_level as cont_level6,
+	        h.listen_file_path as listen_file_path6,
+	        h.send_file_path1 as send_file_path16,
+	        h.label as label6,
+	        h.price as price6,
+	        h.spproductid as spproductid6,
+	        h.single as single6,
+	        h.ability as ability6,
+	        h.send_file_path2 as send_file_path26,
+	        h.fore_show as fore_show6,
+	        h.wapicon as wapicon6,
+	        h.wwwicon as wwwicon6,
+	        h.poster as poster6,
+	        h.ver_poster as ver_poster6,
+	        h.screenshot as screenshot6,
+	        h.descripiton as descripiton6,
+	        h.source_company as source_company6,
+	        h.source_cp_id as source_cp_id6,
+	        h.video_level as video_level6,
+	        h.cp_id as cp_id6,
+	        h.attribution as attribution6,
+	        h.operator as operator6
+
+
+	</sql>
+
+	<resultMap id="BasePlusResultMap" type="com.yanhua.rtb.vo.ContentSpxlVo">
+		<id column="id6" property="id" />
+
+		<result column="serial_no6" property="serialNo" />
+
+		<result column="operation6" property="operation" />
+
+		<result column="content_id6" property="contentId" />
+
+		<result column="copyright_id6" property="copyrightId" />
+
+		<result column="song_id6" property="songId" />
+
+		<result column="content_name6" property="contentName" />
+
+		<result column="spid6" property="spid" />
+
+		<result column="cont_type6" property="contType" />
+
+		<result column="para16" property="para1" />
+
+		<result column="publish_time6" property="publishTime" />
+
+		<result column="valid_date6" property="validDate" />
+
+		<result column="grant_type6" property="grantType" />
+
+		<result column="use_area6" property="useArea" />
+
+		<result column="spread_channel6" property="spreadChannel" />
+
+		<result column="grant_times6" property="grantTimes" />
+
+		<result column="create_time6" property="createTime" />
+
+		<result column="end_date6" property="endDate" />
+
+		<result column="online_date6" property="onlineDate" />
+
+		<result column="format6" property="format" />
+
+		<result column="fee_type6" property="feeType" />
+
+		<result column="hightest_price6" property="hightestPrice" />
+
+		<result column="lowest_price6" property="lowestPrice" />
+
+		<result column="suggest_price6" property="suggestPrice" />
+
+		<result column="discount6" property="discount" />
+
+		<result column="discount_desc6" property="discountDesc" />
+
+		<result column="settlement_param6" property="settlementParam" />
+
+		<result column="discount_settlement_param6" property="discountSettlementParam" />
+
+		<result column="spxl_range6" property="spxlRange" />
+
+		<result column="terminal_type6" property="terminalType" />
+
+		<result column="channel_ability6" property="channelAbility" />
+
+		<result column="cont_level6" property="contLevel" />
+
+		<result column="listen_file_path6" property="listenFilePath" />
+
+		<result column="send_file_path16" property="sendFilePath1" />
+
+		<result column="label6" property="label" />
+
+		<result column="price6" property="price" />
+
+		<result column="spproductid6" property="spproductid" />
+
+		<result column="single6" property="single" />
+
+		<result column="ability6" property="ability" />
+
+		<result column="send_file_path26" property="sendFilePath2" />
+
+		<result column="fore_show6" property="foreShow" />
+
+		<result column="wapicon6" property="wapicon" />
+
+		<result column="wwwicon6" property="wwwicon" />
+
+		<result column="poster6" property="poster" />
+
+		<result column="ver_poster6" property="verPoster" />
+
+		<result column="screenshot6" property="screenshot" />
+
+		<result column="descripiton6" property="descripiton" />
+
+		<result column="source_company6" property="sourceCompany" />
+
+		<result column="source_cp_id6" property="sourceCpId" />
+
+		<result column="video_level6" property="videoLevel" />
+
+		<result column="cp_id6" property="cpId" />
+
+		<result column="attribution6" property="attribution" />
+
+		<result column="operator6" property="operator" />
+		<collection property="fileList" ofType="com.yanhua.rtb.vo.ContentSpxlDetailVo" select="com.yanhua.rtb.mapper.ContentSpxlDetailMapper.getContentSpxlDetailResult" column="content_id6=content_id6"/>
+
+<!--		<collection property="fileList" ofType="com.yanhua.rtb.vo.ContentSpxlDetailVo" select="com.yanhua.rtb.mapper.ContentSpxlDetailMapper.getContentSpxlDetailResult" column="">-->
+<!--			<id column="id" property="id" />-->
+<!--			<result column="content_id" property="contentId" />-->
+
+<!--			<result column="file_path" property="filePath" />-->
+
+<!--			<result column="file_code" property="fileCode" />-->
+
+<!--			<result column="mime" property="mime" />-->
+
+<!--			<result column="drmtype" property="drmtype" />-->
+
+<!--			<result column="file_size" property="fileSize" />-->
+
+<!--			<result column="file_play_path" property="filePlayPath" />-->
+
+<!--			<result column="file_play_time" property="filePlayTime" />-->
+
+<!--			<result column="lyric_path" property="lyricPath" />-->
+
+<!--			<result column="file_ml" property="fileMl" />-->
+
+<!--			<result column="file_cyl" property="fileCyl" />-->
+
+<!--			<result column="samplebitrate" property="samplebitrate" />-->
+
+<!--			<result column="samplingrate" property="samplingrate" />-->
+
+<!--			<result column="resolution" property="resolution" />-->
+
+<!--			<result column="aspectratio" property="aspectratio" />-->
+
+<!--			<result column="filelhws" property="filelhws" />-->
+
+<!--			<result column="file_sd" property="fileSd" />-->
+<!--		</collection>-->
+	</resultMap>
+    <select id="pageVo" resultMap="BasePlusResultMap">
+
+		SELECT <include refid="Page_Column_List"/> FROM content_spxl h
+<!-- 		LEFT JOIN content_spxl_detail b on a.content_id = b.content_id -->
+		<!-- 省略条件sql语句 -->
+		${ew.customSqlSegment}
+	</select>
+
 </mapper>

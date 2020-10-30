@@ -40,8 +40,8 @@ public class RColumn extends Model<RColumn> {
 	@ApiModelProperty(name = "templateId" , value = "栏目模板id")
 	private Integer templateId;
 
-	@ApiModelProperty(name = "areaId" , value = "地区id")
-	private Integer areaId;
+	@ApiModelProperty(name = "channelId" , value = "地区id")
+	private Integer channelId;
 
 	@ApiModelProperty(name = "bgPhoto" , value = "栏目图片地址")
 	private String bgPhoto;

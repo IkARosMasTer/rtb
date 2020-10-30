@@ -48,7 +48,7 @@ public class ContentSpxl extends Model<ContentSpxl> {
 	private String contentId;
     
 	@ApiModelProperty(name = "copyrightId" , value = "版权id")
-	private Long copyrightId;
+	private String copyrightId;
     
 	@ApiModelProperty(name = "songId" , value = "彩铃id")
 	private Integer songId;
@@ -224,6 +224,12 @@ public class ContentSpxl extends Model<ContentSpxl> {
     
 	@ApiModelProperty(name = "cpId" , value = "")
 	private Integer cpId;
+
+	@ApiModelProperty(name = "attribution",value = "归属：0,无;1,岩华;2,粒子文化;9,其他")
+	private Integer attribution;
+
+	@ApiModelProperty(name = "operator",value = "运营商（1：移动；2：联通：3：电信）")
+	private Integer operator;
 
 	@ApiModelProperty(name = "fileList" , value = "信息详细")
 	@TableField(exist = false)

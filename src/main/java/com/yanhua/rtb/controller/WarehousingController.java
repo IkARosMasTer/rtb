@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.WebAsyncTask;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
@@ -47,27 +48,18 @@ public class WarehousingController {
     @ApiOperation(value = "联通excel上传接口",httpMethod = "POST",notes = "excel字段名为copyrightId")
     @PostMapping(value="/upload/unicom",headers="content-type=multipart/form-data")
     @ResponseBody
-    public WebAsyncTask<List<String>> upload(
+    public WebAsyncTask<List<String>> cuccUpload(
             @ApiParam(value = "上传的文件", required = true)
             @RequestParam("excelFile") MultipartFile excelFile) {
         log.info(Thread.currentThread().getName() + " 进入控制器方法了");
-        String name = excelFile.getOriginalFilename();
         List<String> copyrightIds;
-        if (StringUtils.isNotEmpty(name)){
-            String suffix = name.substring(name.lastIndexOf(".")).toLowerCase();
-            if (".xls".equals(suffix)||".xlsx".equals(suffix)){
-                try{
-                    copyrightIds = ExcelUtils.getCopyrightIds(excelFile.getInputStream());
-                }catch (Exception e){
-                    e.printStackTrace();
-                    log.error("联通excel上传接口=============>IO流操作异常");
-                    throw new EngineException("IO流操作异常");
-                }
-            }else {
-                throw new EngineException(1003,"excel文件格式错误");
-            }
-        }else {
-            throw new EngineException(1004,"excel文件名缺失");
+       checkExcel(excelFile);
+        try{
+            copyrightIds = ExcelUtils.getCuccCopyrightIds(excelFile.getInputStream());
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("联通excel上传接口=============>IO流操作异常");
+            throw new EngineException("IO流操作异常");
         }
         //webAsyncTask构造方法里可以直接传超时期限，否则就看统一的异步请求配置里的超时时间
         WebAsyncTask<List<String>> webAsyncTask = new WebAsyncTask<>( () -> {
@@ -90,4 +82,43 @@ public class WarehousingController {
         return webAsyncTask;
     }
 
+
+    @ApiOperation(value = "移动excel上传接口",httpMethod = "POST",notes = "excel格式为移动平台拉取的原始模板")
+    @PostMapping(value="/upload/ctcc/",headers="content-type=multipart/form-data")
+    @ResponseBody
+    public WebAsyncTask<List<String>> ctccUpload(
+            @ApiParam(value = "上传的文件", required = true)
+            @RequestParam("excelFile") MultipartFile excelFile) {
+        checkExcel(excelFile);
+        List<Map<String,String>> copyrightIds;
+        try{
+            copyrightIds = ExcelUtils.getCtccCopyrightIds(excelFile.getInputStream());
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("移动excel上传接口=============>IO流操作异常");
+            throw new EngineException("IO流操作异常");
+        }
+        WebAsyncTask<List<String>> webAsyncTask = new WebAsyncTask<>( () -> warehousingService.getChinaMobile(copyrightIds));
+        webAsyncTask.onCompletion(() -> log.info(Thread.currentThread().getName() + " 执行完毕"));
+        webAsyncTask.onTimeout(() -> {
+            throw new TimeoutException("后台处理中,请稍后查看");
+        });
+        webAsyncTask.onError(() -> {
+            throw new EngineException("异步处理异常");
+        });
+        return webAsyncTask;
+    }
+
+
+    private void checkExcel(MultipartFile excelFile){
+        String name = excelFile.getOriginalFilename();
+        if (StringUtils.isNotEmpty(name)){
+            String suffix = name.substring(name.lastIndexOf(".")).toLowerCase();
+            if (!".xls".equals(suffix)&&!".xlsx".equals(suffix)) {
+                throw new EngineException(1003, "excel文件格式错误");
+            }
+        }else {
+            throw new EngineException(1004,"excel文件名缺失");
+        }
+    }
 }

@@ -16,16 +16,22 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yanhua.rtb.entity.ContentSpxlDetail;
+import com.yanhua.rtb.util.CustomForEach;
+import com.yanhua.rtb.util.DateUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 〈功能简述〉<br>
@@ -55,7 +61,7 @@ public class ContentSpxlVo implements Serializable {
     private String contentId;
 
     @ApiModelProperty(name = "copyrightId" , value = "版权id")
-    private Long copyrightId;
+    private String copyrightId;
 
     @ApiModelProperty(name = "songId" , value = "彩铃id")
     private Integer songId;
@@ -232,6 +238,52 @@ public class ContentSpxlVo implements Serializable {
     @ApiModelProperty(name = "cpId" , value = "")
     private Integer cpId;
 
+    @ApiModelProperty(name = "attribution",value = "归属：0,无;1,岩华;9,其他")
+    private Integer attribution;
+
+    @ApiModelProperty(name = "operator",value = "运营商（1：移动；2：联通：3：电信）")
+    private Integer operator;
+
     @ApiModelProperty(name = "fileList" , value = "彩铃文件数组")
     private List<ContentSpxlDetailVo> fileList;
+
+    public ContentSpxlVo() {
+    }
+
+    public ContentSpxlVo(CtccContentSpxlVo ctccContentSpxlVo, String label, String copyrightId) throws ParseException {
+
+        this.contentId = ctccContentSpxlVo.getContentId();
+        this.contentName = ctccContentSpxlVo.getToneName();
+        this.suggestPrice = ctccContentSpxlVo.getPrice();
+        this.validDate = DateUtils.string2Date(ctccContentSpxlVo.getToneValidDay(),"yyyy-MM-dd");
+        this.copyrightId = ctccContentSpxlVo.getMusicId();
+        this.label = label;
+        //来源
+        this.attribution = "699052".equals(StringUtils.substring(copyrightId,0,6))?1:9;
+        //cpId
+        this.cpId = Integer.valueOf(StringUtils.substring(copyrightId,0,6));
+        List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos = ctccContentSpxlVo.getFileInfos();
+        if (ctccContentSpxlDetailVos!=null&&ctccContentSpxlDetailVos.size()>0){
+            List<ContentSpxlDetailVo> list = new ArrayList<>();
+            //处理图片
+            CustomForEach.forEach(ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo!=null&&("109".equals(ctccContentSpxlDetailVo.getType())||"115".equals(ctccContentSpxlDetailVo.getType()))),
+                    (ctcc,breaker) ->{
+                        if ("109".equals(ctcc.getType())&& StringUtils.isNotEmpty(ctcc.getFilePath())){
+                            this.verPoster = ctcc.getFilePath();
+                            breaker.stop();
+                        }else if ("115".equals(ctcc.getType())){
+                            this.verPoster = ctcc.getFilePath();
+                        }
+                    });
+            //处理视频
+            CustomForEach.forEach(ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo!=null&&("3".equals(ctccContentSpxlDetailVo.getType())||"5".equals(ctccContentSpxlDetailVo.getType()))),
+                    (ctcc,breaker) ->{
+                        ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
+                        contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getContentId());
+                        contentSpxlDetailVo.setFilePath(ctcc.getFilePath());
+                        list.add(contentSpxlDetailVo);
+                    });
+            this.fileList = list;
+        }
+    }
 }

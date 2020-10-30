@@ -58,15 +58,15 @@ public class RColumnServiceImpl extends ServiceImpl<RColumnMapper, RColumn> impl
     private ITempletService iTempletService;
 
     @Override
-    public List<ColumnVo> getAllColumnVoList(Integer areaId, Integer columnId, Integer startPage, Integer pageSize ) {
+    public List<ColumnVo> getAllColumnVoList(Integer channelId, Integer columnId, Integer startPage, Integer pageSize ) {
         Page<ColumnVo> page = new Page<>(startPage, pageSize);
-        return columnMapper.getByAreaIdAndColumnId(page,areaId,columnId);
-//        return columnMapper.getByAreaIdAndColumnId(page,new QueryWrapper<ColumnVo>().lambda().eq(ColumnVo::getColumnId,columnId).eq(ColumnVo::getAreaId,areaId).groupBy(ColumnVo::getColumnId)).getRecords();
+        return columnMapper.getByAreaIdAndColumnId(page,channelId,columnId);
+//        return columnMapper.getByAreaIdAndColumnId(page,new QueryWrapper<ColumnVo>().lambda().eq(ColumnVo::getColumnId,columnId).eq(ColumnVo::getChannelId,areaId).groupBy(ColumnVo::getColumnId)).getRecords();
     }
 
     @Override
-    public List<ColumnVo> getColumnVoList(Integer areaId) {
-        List<RColumn> columns = columnMapper.selectList(new QueryWrapper<RColumn>().lambda().eq(RColumn::getAreaId, areaId).eq(RColumn::getLevel,1));
+    public List<ColumnVo> getColumnVoList(Integer channelId) {
+        List<RColumn> columns = columnMapper.selectList(new QueryWrapper<RColumn>().lambda().eq(RColumn::getChannelId, channelId).eq(RColumn::getLevel,1));
         return columns.stream().filter(Objects::nonNull).map(rColumn -> {
             ColumnVo columnVo = new ColumnVo();
             BeanUtils.copyProperties(rColumn, columnVo);
@@ -189,8 +189,8 @@ public class RColumnServiceImpl extends ServiceImpl<RColumnMapper, RColumn> impl
     }
 
     @Override
-    public void checkColumnAndArea(Integer areaId, Integer columnId) {
-        iAreaService.checkArea(areaId);
+    public void checkColumnAndArea(Integer channelId, Integer columnId) {
+        iAreaService.checkArea(channelId);
         if (columnId==null) {
             throw new EngineException(PARAM_NOT_COMPLETE);
         }

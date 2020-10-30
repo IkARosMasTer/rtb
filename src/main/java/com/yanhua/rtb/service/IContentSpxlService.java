@@ -7,9 +7,11 @@
 package com.yanhua.rtb.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yanhua.rtb.entity.ContentSpxl;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhua.rtb.entity.ContentSpxlDetail;
+import com.yanhua.rtb.vo.ContentSpxlVo;
 
 import java.util.List;
 
@@ -21,10 +23,14 @@ import java.util.List;
  */
 public interface IContentSpxlService extends IService<ContentSpxl> {
 
-    ContentSpxl selectByWrapper(String contentId,Long copyrightId);
+    ContentSpxl selectByWrapper(String contentId,String copyrightId);
 
     String update(ContentSpxl contentSpxl, List<ContentSpxlDetail> contentSpxlDetails);
 
     String save(ContentSpxl contentSpxl,List<ContentSpxlDetail> contentSpxlDetails);
-	
+
+
+    IPage<ContentSpxlVo> pageVo(IPage<ContentSpxlVo> page, Wrapper<ContentSpxl> queryWrapper);
+
+
 }

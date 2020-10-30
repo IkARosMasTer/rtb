@@ -64,7 +64,7 @@ public class TempletServiceImpl implements ITempletService {
 
     @Override
     public TempletVo saveTemplet(TempletVo templetVo) {
-        Integer areaId = templetVo.getAreaId();
+        Integer areaId = templetVo.getChannelId();
         Integer columnId = templetVo.getParColumnId();
         RColumn rColumn = new RColumn();
         //todo:目前写死是二级
@@ -84,7 +84,7 @@ public class TempletServiceImpl implements ITempletService {
             templetVo.setColumnId(rColumn.getColumnId());
         }else {
             //插入失败。未生成模板id
-            log.error("新增模板==========>插入失败,未生成模板id:地区id{},栏目id{}",areaId,columnId);
+            log.error("新增模板==========>插入失败,未生成模板id:渠道id{},栏目id{}",areaId,columnId);
             throw new EngineException("插入失败,未生成模板id:栏目id"+columnId);
         }
         return templetVo;
@@ -142,7 +142,7 @@ public class TempletServiceImpl implements ITempletService {
             templetVo.setColumnId(rColumn.getColumnId());
         }else {
             //更新失败
-            log.error("更新模板==========>更新失败:地区id{},栏目id{}",templetVo.getAreaId(),columnId);
+            log.error("更新模板==========>更新失败:渠道id{},栏目id{}",templetVo.getChannelId(),columnId);
             throw new EngineException("更新失败:栏目id"+columnId);
         }
         return "更新模板"+templateId+"成功!";

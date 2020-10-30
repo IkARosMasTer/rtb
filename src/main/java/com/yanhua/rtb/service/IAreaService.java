@@ -32,8 +32,8 @@ public interface IAreaService extends IService<Area> {
      *
      * @description: 检查地区
      *      <p/>
-     * @param areaId:
+     * @param channelId:
      * @return void
      */
-    void checkArea(Integer areaId);
+    void checkArea(Integer channelId);
 }

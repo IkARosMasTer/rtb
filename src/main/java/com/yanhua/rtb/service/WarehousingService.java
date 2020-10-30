@@ -11,6 +11,7 @@
 package com.yanhua.rtb.service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 〈功能简述〉<br>
@@ -29,5 +30,17 @@ public interface WarehousingService {
      * @param copyrightIds:
      */
     List<String> getCnUnicom(List<String> copyrightIds);
+
+    /**
+     *
+     * @description: 中国移动视频彩铃信息入库
+     *      <p/>
+     * @param copyrightIds:
+     * @return java.util.List<java.lang.String>
+     * @author Emiya
+     */
+    List<String> getChinaMobile(List<Map<String,String>> copyrightIds);
+
+
 
 }

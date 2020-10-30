@@ -82,7 +82,8 @@ public class HttpTools {
 		BufferedReader br = null;
 		try {
 			GetMethod getMethod = new GetMethod(url);
-			getMethod.addRequestHeader("Connection", "close");
+//			getMethod.getParams().setParameter("data","{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":\"00210OX\",\"token\":\"8bf9adf62276420d9fa4c229d8f3adbd\",\"vrbtId\":\"699052T2491M\"}");
+//			getMethod.addRequestHeader("Connection", "close");
 			HttpClient client = new HttpClient();
 			client.executeMethod(getMethod);
 			client.getParams().setBooleanParameter( "http.protocol.expect-continue" , false );

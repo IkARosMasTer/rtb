@@ -7,7 +7,7 @@
 
 		<result column="template_id" property="templateId" />
 
-		<result column="area_id" property="areaId" />
+		<result column="channe_id" property="channelId" />
 
 		<result column="bg_photo" property="bgPhoto" />
 
@@ -34,7 +34,7 @@
 
 		<result column="template_id" property="templateId" />
 
-		<result column="area_id" property="areaId" />
+		<result column="channel_id" property="channelId" />
 
 		<result column="bg_photo" property="bgPhoto" />
 
@@ -69,7 +69,7 @@
 
 			<result column="templateId1" property="templateId" />
 
-			<result column="areaId1" property="areaId" />
+			<result column="channelId1" property="channelId" />
 
 			<result column="bgPhoto1" property="bgPhoto" />
 
@@ -129,7 +129,7 @@
 	<!--	</resultMap>-->
 
 	<sql id="Base_Column_List">
-		column_id, template_id,area_id, bg_photo, column_name, par_column_id, level, column_order, subtitle, background_img, create_time, update_time
+		column_id, template_id,channel_id, bg_photo, column_name, par_column_id, level, column_order, subtitle, background_img, create_time, update_time
 	</sql>
 
 
@@ -153,7 +153,7 @@
 	a.*,
 	b.column_id AS columnId1,
 	b.template_id AS templateId1,
-	b.area_id AS areaId1,
+	b.channel_id AS channelId1,
 	b.bg_photo AS bgPhoto1,
 	b.column_name AS columnName1,
 	b.par_column_id AS parColumnId1,
@@ -179,7 +179,7 @@ FROM
 	LEFT JOIN `r_column` b ON b.par_column_id = a.column_id
 	left JOIN template f ON f.template_id = b.template_id
 WHERE
-		a.area_id = #{areaId,jdbcType=INTEGER}
+		a.channel_id = #{areaId,jdbcType=INTEGER}
 		AND a.column_id = #{columnId,jdbcType=INTEGER}
         order by b.column_order asc
 	</select>

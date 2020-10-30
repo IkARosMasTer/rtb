@@ -72,6 +72,10 @@ warehousing:
     md5: B26795DB8A716BB7
     fileUrl: http://listen.10155.com/listener
     user: 18720552070
+  chinaMobile:
+    url: https://m.12530.com/order/rest/vrbt/product/query.do?data=
+    tokenUrl: https://vcrbt-migu.yanhuamedia.tv/vcrbt/aa/ring/login?v=1
+    channelCode: 00210OX
 
 
 mams:

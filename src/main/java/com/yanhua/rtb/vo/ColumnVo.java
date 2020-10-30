@@ -43,9 +43,9 @@ public class ColumnVo implements Serializable {
 //    @NotNull(message = "模板id不能為空")
     private Integer templateId;
 
-    @ApiModelProperty(name = "areaId" , value = "地区id")
-    @NotNull(message = "地區id不能為空")
-    private Integer areaId;
+    @ApiModelProperty(name = "channelId" , value = "渠道id")
+    @NotNull(message = "渠道id不能為空")
+    private Integer channelId;
 
     @ApiModelProperty(name = "bgPhoto" , value = "栏目图片地址")
     private String bgPhoto;
