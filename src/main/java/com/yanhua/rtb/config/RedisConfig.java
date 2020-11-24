@@ -26,6 +26,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
  * 〈功能简述〉<br>
@@ -40,7 +45,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 //@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport{
 
-    public final static String reids_prefix="rtb_" ; //redis前缀
+    public final static String REDIS_PREFIX="rtb_" ; //redis前缀
 
 //    @Bean
 //     public RedisTemplate<String, Object> template(
@@ -87,9 +92,14 @@ public class RedisConfig extends CachingConfigurerSupport{
         template.setDefaultSerializer(serializer);
 //        template.setEnableDefaultSerializer(true);
         template.afterPropertiesSet();
+        System.out.println("========================redis开启成功！=====================");
         return template;
     }
-
-
+//
+//    //配置事务管理器,让Redis的事务由Translation控制
+//    @Bean
+//    public PlatformTransactionManager transactionManager(DataSource dataSource) throws SQLException {
+//        return new DataSourceTransactionManager(dataSource);
+//    }
 
 }

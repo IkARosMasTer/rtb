@@ -6,12 +6,20 @@
  */
 package com.yanhua.rtb.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yanhua.rtb.common.ResponseResult;
 import com.yanhua.rtb.entity.Area;
+import com.yanhua.rtb.entity.RColumn;
+import com.yanhua.rtb.mapper.RColumnMapper;
 import com.yanhua.rtb.service.IAreaService;
+import com.yanhua.rtb.service.IRColumnService;
+import com.yanhua.rtb.vo.ColumnVo;
+import freemarker.template.utility.StringUtil;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -32,11 +40,13 @@ import java.util.List;
 @Api(tags = "渠道控制器")
 @RestController
 @ResponseResult
-@RequestMapping("/area")
+@RequestMapping("/channel")
 public class AreaController {
 
     @Autowired
     private IAreaService areaService;
+    @Autowired
+    private IRColumnService irColumnService;
 
     @ApiOperation(value = "查询某个渠道信息",httpMethod = "GET",notes = "默认返回禁用外的数据")
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
@@ -44,11 +54,37 @@ public class AreaController {
     public Area findAreaById(@PathVariable Integer id){
         return areaService.getById(id);
     }
-    @ApiOperation(value = "查询某个渠道信息(根据渠道标识)",httpMethod = "GET",notes = "默认返回禁用外的数据")
+//    @ApiOperation(value = "查询某个渠道信息(根据渠道标识)",httpMethod = "GET",notes = "默认返回禁用外的数据")
+//    @RequestMapping(value = "/channelCode",method = RequestMethod.GET)
+//    @ApiImplicitParam(paramType="query", name = "channelCode", value = "渠道标识", required = true, dataType = "String")
+//    public List<Area> findAreaByChannelCode(@RequestParam String channelCode){
+//        return areaService.list(new QueryWrapper<Area>().lambda().eq(Area::getChannelCode,channelCode).eq(Area::getStatus,0));
+//    }
+    @ApiOperation(value = "查询某个渠道信息(根据运营商、渠道标识)",httpMethod = "GET",notes = "默认返回禁用外的数据")
     @RequestMapping(value = "",method = RequestMethod.GET)
-    @ApiImplicitParam(paramType="query", name = "channelCode", value = "渠道标识", required = true, dataType = "String")
-    public List<Area> findAreaByChannelCode(@RequestParam String channelCode){
-        return areaService.list(new QueryWrapper<Area>().lambda().eq(Area::getChannelCode,channelCode));
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "operator", value = "运营商", required = false, dataType = "Long"),
+            @ApiImplicitParam(paramType = "query", name = "status", value = "状态", required = false, dataType = "Long"),
+            @ApiImplicitParam(paramType = "query", name = "channelCode", value = "渠道标识", required = false, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "company", value = "公司名称", required = false, dataType = "String")
+
+    })
+    public List<Area> findAreaByOperator(@RequestParam(required = false) Integer operator,@RequestParam(required = false) String channelCode
+            ,@RequestParam(required = false) Integer status,@RequestParam(required = false) String company){
+        LambdaQueryWrapper<Area> queryWrapper = new QueryWrapper<Area>().lambda();
+        if (status!=null){
+            queryWrapper.eq(Area::getStatus,status);
+        }
+        if (operator!=null&&operator>0){
+            queryWrapper.eq(Area::getOperator,operator);
+        }
+        if (StringUtils.isNotEmpty(channelCode)){
+            queryWrapper.eq(Area::getChannelCode,channelCode);
+        }
+        if (StringUtils.isNotEmpty(company)){
+            queryWrapper.like(Area::getCompany,company);
+        }
+        return areaService.list(queryWrapper);
     }
 
     @ApiOperation(value = "查询所有渠道信息",httpMethod = "GET",notes = "默认返回所有禁用外的数据")
@@ -79,7 +115,37 @@ public class AreaController {
         if (area.getUpdateTime()==null){
             area.setUpdateTime(new Date());
         }
+        if (area.getStatus()==null){
+            area.setStatus(0);
+        }
         return areaService.saveOrUpdate(area);
+    }
+    @ApiOperation(value = "复制某个渠道信息",httpMethod = "POST",notes = "复制元數據")
+    @RequestMapping(value = "/copy/{id}",method = RequestMethod.POST)
+    public String copyArea(@PathVariable Integer id){
+        //查出渠道
+        Area area = areaService.checkArea(id);
+        if (area.getCreateTime()==null){
+            area.setCreateTime(new Date());
+        }
+        if (area.getUpdateTime()==null){
+            area.setUpdateTime(new Date());
+        }
+        if (area.getStatus()==null){
+            area.setStatus(0);
+        }
+        //查出渠道对应的栏目、模板、推荐位
+        List<RColumn> rColumns = areaService.copyAreaAll(area);
+        //重新复制插入
+        area.setChannelId(null);
+        if (areaService.saveOrUpdate(area)){
+            if (rColumns!=null&&rColumns.size()>0) {
+                List<ColumnVo> columnVos = irColumnService.importColumnList(rColumns, area.getChannelId());
+            }
+            return "新渠道复制成功!";
+        }else {
+            return "渠道复制失败,请稍后重试!";
+        }
     }
 
 

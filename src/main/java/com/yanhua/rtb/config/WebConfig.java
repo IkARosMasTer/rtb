@@ -81,11 +81,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
+        System.out.println("Runtime.getRuntime().availableProcessors()="+Runtime.getRuntime().availableProcessors());
         t.setCorePoolSize(Runtime.getRuntime().availableProcessors());
         t.setMaxPoolSize(Runtime.getRuntime().availableProcessors()*5);
         t.setQueueCapacity(Runtime.getRuntime().availableProcessors()*2);
-        t.setWaitForTasksToCompleteOnShutdown(true);
-        t.setThreadNamePrefix("MyAsyncThreadPool-");
+        t.setWaitForTasksToCompleteOnShutdown(false);
+        t.setThreadNamePrefix("_____RTB_");
         System.out.println("==============================开启我的异步请求线程池================================>");
         return t;
     }

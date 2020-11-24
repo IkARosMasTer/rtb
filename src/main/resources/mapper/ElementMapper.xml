@@ -175,6 +175,8 @@
 			<result column="attribution6" property="attribution" />
 
 			<result column="operator6" property="operator" />
+
+			<result column="status6" property="status" />
 			<collection property="fileList" ofType="com.yanhua.rtb.vo.ContentSpxlDetailVo" select="com.yanhua.rtb.mapper.ContentSpxlDetailMapper.getContentSpxlDetailResult" column="content_id6=content_id6"/>
 		</association>
 	</resultMap>
@@ -249,15 +251,17 @@
 	        h.video_level as video_level6,
 	        h.cp_id as cp_id6,
 	        h.attribution as attribution6,
-	        h.operator as operator6
+	        h.operator as operator6,
+	        h.status as status6
 
 
 		from
 		element c
 		LEFT JOIN template g on g.template_id = c.template_id
-		LEFT JOIN content_spxl h on h.content_id = c.content_spxl_id
+		inner JOIN content_spxl h on h.content_id = c.content_spxl_id
 		where c.column_id = #{columnId1,jdbcType=INTEGER}
-		order by c.element_order
+		and h.status = 0
+		order by c.element_order desc, c.update_time desc
 	</select>
 	
 </mapper>

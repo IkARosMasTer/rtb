@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.yanhua.rtb.common.GlobalConstant;
 import com.yanhua.rtb.entity.User;
 import com.yanhua.rtb.mapper.UserMapper;
 import com.yanhua.rtb.service.IUserService;
@@ -23,6 +24,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -56,6 +58,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         User user1 = (User) template.opsForHash().get("user", "user:" + name);
         List<User> userList = new ArrayList<User>();
+        template.opsForValue().set(GlobalConstant.CTCC_TOKEN_KEY,"ggggffsf",3600, TimeUnit.SECONDS);
+                    String token = (String) template.opsForValue().get(GlobalConstant.CTCC_TOKEN_KEY);
+
 //        List<Object> values = template.opsForHash().values("user:" + name);
         if(user1 != null){
             userList.add(user1);
@@ -82,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public List<?> selectUserAll(Integer pageSize, Integer startPage) {
-        List<Object> list = template.opsForHash().values("user");
+        List<Object> list = (List<Object>) template.opsForValue().get("user");
         if(list != null && list.size()>0){
             System.out.println("未走数据库");
             return list;

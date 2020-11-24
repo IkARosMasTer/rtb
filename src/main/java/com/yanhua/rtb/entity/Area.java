@@ -50,7 +50,7 @@ public class Area extends Model<Area> {
 	private String areaTitle;
     
 	@ApiModelProperty(name = "areaCode" , value = "区域标识")
-	@NotNull(message = "区域标识不能為空")
+//	@NotNull(message = "区域标识不能為空")
 	private Integer areaCode;
     
 	@ApiModelProperty(name = "company" , value = "渠道公司名称")
@@ -66,7 +66,7 @@ public class Area extends Model<Area> {
 	@ApiModelProperty(name = "updateTime" , value = "更新时间")
 	private Date updateTime;
 
-	@TableLogic(value = "0", delval = "1")
+//	@TableLogic( value = "0" ,delval = "3")
 	@ApiModelProperty(name = "status" , value = "状态（0：可用；1：不可用）")
 	private Integer status;
     

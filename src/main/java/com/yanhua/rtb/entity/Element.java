@@ -71,6 +71,7 @@ public class Element extends Model<Element> {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	@ApiModelProperty(name = "updateTime" , value = "更新时间")
+	//根据当前时间戳更新，其他时间字段在更新的时候此字段也会更新
 	private Date updateTime;
 
 	@TableField(exist = false)

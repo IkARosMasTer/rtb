@@ -9,9 +9,18 @@
     <appenders>
         <!--这个输出控制台的配置-->
         <console name="Console" target="SYSTEM_OUT">
+            <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) . -->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT"
+                             onMismatch="DENY" />
             <!--输出日志的格式-->
             <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l [%X{reqId}]- %m%n"/>
         </console>
+        <!-- 这个输出控制台的配置，这里输出error级别的信息到System.err，在eclipse控制台上看到的是红色文字 -->
+        <Console name="console_err_appender" target="SYSTEM_ERR">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT"
+                             onMismatch="DENY" />
+            <PatternLayout pattern="%5p [%t] %d{yyyy-MM-dd HH:mm:ss} (%F:%L) %m%n" />
+        </Console>
         <!--文件会打印出所有信息，这个log每次运行程序会自动清空，由append属性决定，这个也挺有用的，适合临时测试用-->
         <File name="log" fileName="logs/test.log" append="false">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} [%X] %L %M - %msg%xEx%n"/>
@@ -22,8 +31,8 @@
                      filePattern="../logs/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
             <Filters>
                 <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
-                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
-                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
             </Filters>
             <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l %class{36} [%X{reqId}]- %m%n"/>
             <Policies>
@@ -68,8 +77,11 @@
         </logger>
         <logger name="springfox.documentation" level="INFO">
         </logger>
+<!--&lt;!&ndash;        <logger name="org.apache.commons.httpclient" level="DEBUG">&ndash;&gt;-->
+<!--        </logger>-->
         <root level="all">
             <appender-ref ref="Console"/>
+            <appender-ref ref="console_err_appender"/>
             <appender-ref ref="RollingFileInfo"/>
             <appender-ref ref="RollingFileWarn"/>
             <appender-ref ref="RollingFileError"/>

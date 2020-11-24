@@ -177,11 +177,11 @@ FROM
 	`r_column` a
 	LEFT JOIN template d ON d.template_id = a.template_id
 	LEFT JOIN `r_column` b ON b.par_column_id = a.column_id
-	left JOIN template f ON f.template_id = b.template_id
+	LEFT JOIN template f ON f.template_id = b.template_id
 WHERE
 		a.channel_id = #{areaId,jdbcType=INTEGER}
 		AND a.column_id = #{columnId,jdbcType=INTEGER}
-        order by b.column_order asc
+        order by b.column_order desc, b.update_time desc
 	</select>
 	<!--	<select id="getByAreaIdAndColumnId" resultMap="BasePlusResultMap" >-->
 	<!--        SELECT-->

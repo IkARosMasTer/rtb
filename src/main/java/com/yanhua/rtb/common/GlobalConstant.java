@@ -34,4 +34,8 @@ public class GlobalConstant {
     public static String MAMS_MOVIE_PATH = "vod";
     public static String MAMS_IMG_PATH = "img";
 
+
+    //Redis key前缀
+    public static  final String CTCC_TOKEN_KEY = "ctccToken:";
+
 }

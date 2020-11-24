@@ -1,6 +1,7 @@
 package com.yanhua.rtb.util;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class HttpTools {
 
 
@@ -35,8 +37,8 @@ public class HttpTools {
 //			System.out.println(body);
 			RequestEntity re = new StringRequestEntity(body, "application/json", "utf-8");
 			post.setRequestEntity(re);
-			client.getHttpConnectionManager().getParams().setSoTimeout(50000);
-			client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);
+			client.getHttpConnectionManager().getParams().setSoTimeout(10000);
+			client.getHttpConnectionManager().getParams().setConnectionTimeout(10000);
 			client.executeMethod(post);
 			rtnString = post.getResponseBodyAsString();
 //			System.out.println("Access System authenticate, Status: " + post.getStatusCode());
@@ -47,6 +49,7 @@ public class HttpTools {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("post请求报错++++++"+e.getMessage());
 			// 调用异常, 返回异常报文
 		} finally {
 			post.releaseConnection();
@@ -103,7 +106,11 @@ public class HttpTools {
 
 		} catch (HttpException e) {
 			e.printStackTrace();
+			log.error("get请求报错++++++"+e.getMessage());
+
 		} catch (IOException e) {
+			log.error("get请求报错++++++"+e.getMessage());
+
 			e.printStackTrace();
 		} finally {
 			if(br != null){
@@ -111,6 +118,7 @@ public class HttpTools {
 					br.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+					log.error("get请求报错++++++"+e.getMessage());
 				}
 			}
 			if(isr != null){
@@ -118,6 +126,8 @@ public class HttpTools {
 					isr.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+					log.error("get请求报错++++++"+e.getMessage());
+
 				}
 			}
 			if(is != null){
@@ -125,6 +135,8 @@ public class HttpTools {
 					is.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+					log.error("get请求报错++++++"+e.getMessage());
+
 				}
 			}
 		}
@@ -170,11 +182,11 @@ public class HttpTools {
              post.releaseConnection();   
         }  
         return responseString;      
-    }   
-    
+    }
+
 	/**
 	 * 计算2个日期之间的差,返回天数
-	 * 
+	 *
 	 * @param
 	 * @return
 	 * @throws Exception

@@ -11,6 +11,7 @@
 package com.yanhua.rtb.service;
 
 import com.sun.org.apache.xpath.internal.objects.XString;
+import com.yanhua.rtb.entity.Element;
 import com.yanhua.rtb.entity.Template;
 import com.yanhua.rtb.vo.TemplateVo;
 import com.yanhua.rtb.vo.TempletVo;
@@ -53,7 +54,7 @@ public interface ITempletService {
      * @param templetId:
      * @return void
      */
-    void checkTemplet(Integer templetId);
+    TempletVo checkTemplet(Integer templetId);
 
     /**
      *
@@ -71,4 +72,6 @@ public interface ITempletService {
      * @param templetVos:
      */
     Map<String,Object> saveOrUpdateTemplets(List<TempletVo> templetVos, Integer columnId);
+
+    List<Element> getElementCopy(Integer templetId);
 }

@@ -31,7 +31,7 @@ import java.util.*;
  */
 @Slf4j
 public class ExcelUtils {
-    public static List<Map<String,String>> getCtccCopyrightIds(InputStream inputStream) {
+    public static List<Map<String,String>> getCmccCopyrightIds(InputStream inputStream) {
         List<Map<String,String>> maps= new ArrayList<>();
         Workbook workbook = null;
         try {
@@ -51,6 +51,7 @@ public class ExcelUtils {
             Integer copyrightIdNo = null;
             Integer labelNo = null;
             Integer contentSortNo = null;
+            Integer cpNo = null;
             for (int j = 0; j< cellLength; j++) {
                 Cell cell = row.getCell(j);
                 if (cell!=null){
@@ -58,9 +59,9 @@ public class ExcelUtils {
                     if (cellType == Cell.CELL_TYPE_STRING&&"版权编号".equals(cell.getStringCellValue().trim())){
                         copyrightIdNo = j;
                     }
-//                    if (cellType == Cell.CELL_TYPE_STRING&&"CPID".equals(cell.getStringCellValue().trim())){
-//                        cpNo = j;
-//                    }
+                    if (cellType == Cell.CELL_TYPE_STRING&&"CPID".equals(cell.getStringCellValue().trim())){
+                        cpNo = j;
+                    }
                     if (cellType == Cell.CELL_TYPE_STRING&&"内容标识".equals(cell.getStringCellValue().trim())){
                         labelNo = j;
                     }
@@ -69,7 +70,7 @@ public class ExcelUtils {
                     }
                 }
             }
-            if (copyrightIdNo==null){
+            if (copyrightIdNo==null||contentSortNo==null||labelNo==null){
                 log.error("excel文件内容无相应字段");
                 throw new EngineException("excel文件内容无相应字段");
             }
@@ -112,9 +113,21 @@ public class ExcelUtils {
             }
             //工作表的列
             Row row = sheet.getRow(0);
-            Cell cell = row.getCell(0);
+            int cellLength = row.getPhysicalNumberOfCells();
+            Integer copyrightIdNo = null;
+            for (int j = 0; j< cellLength; j++) {
+                Cell cell2 = row.getCell(j);
+                if (cell2 != null) {
+                    int cellType = cell2.getCellType();
+                    if (cellType == Cell.CELL_TYPE_STRING && ("版权ID".equals(cell2.getStringCellValue().trim())||
+                            "copyrightid".equals(cell2.getStringCellValue().trim()))) {
+                        copyrightIdNo = j;
+                        break;
+                    }
+                }
+            }
             for (int i = 1; i < rowLength; i++) {
-                String contentId = (String) getCellInfo(sheet.getRow(i), 0,null);
+                String contentId = (String) getCellInfo(sheet.getRow(i), copyrightIdNo,null);
                 if (StringUtils.isNotEmpty(contentId)){
                     list.add(contentId);
                 }
@@ -124,6 +137,74 @@ public class ExcelUtils {
             throw new EngineException("读取excel失败");
         }
         return list;
+    }
+
+
+    public static List<Map<String,String>> getCtccCopyrightIds(InputStream inputStream) {
+        List<Map<String,String>> maps= new ArrayList<>();
+        Workbook workbook = null;
+        try {
+            workbook = WorkbookFactory.create(inputStream);
+            inputStream.close();
+            //工作表对象
+            Sheet sheet = workbook.getSheetAt(0);
+            //总行数
+            int rowLength = sheet.getLastRowNum() + 1;
+            if (rowLength <=1) {
+                log.error("文件内容有误");
+                throw new EngineException("excel文件内容有误");
+            }
+            //工作表的列
+            Row row = sheet.getRow(0);
+            int cellLength = row.getPhysicalNumberOfCells();
+            Integer copyrightIdNo = null;
+            Integer labelNo = null;
+            Integer sortlNo = null;
+            Integer contentSortName = null;
+            for (int j = 0; j< cellLength; j++) {
+                Cell cell = row.getCell(j);
+                if (cell!=null){
+                    int cellType = cell.getCellType();
+                    if (cellType == Cell.CELL_TYPE_STRING&&"资源编码".equals(cell.getStringCellValue().trim())){
+                        copyrightIdNo = j;
+                    }
+                    if (cellType == Cell.CELL_TYPE_STRING&&"视频标签".equals(cell.getStringCellValue().trim())){
+                        labelNo = j;
+                    }
+                    if (cellType == Cell.CELL_TYPE_STRING&&"视频类型".equals(cell.getStringCellValue().trim())){
+                        sortlNo = j;
+                    }
+                    if (cellType ==Cell.CELL_TYPE_STRING&&"上源授权方".equals(cell.getStringCellValue().trim())){
+                        contentSortName = j;
+                    }
+                }
+            }
+            if (copyrightIdNo==null||contentSortName==null||labelNo==null||sortlNo==null){
+                log.error("excel文件内容无相应字段");
+                throw new EngineException("excel文件内容缺少相应字段");
+            }
+            for (int i = 1; i< rowLength;i++){
+                Map<String,String> map = new HashMap<>();
+                String contentSort = (String) getCellInfo(sheet.getRow(i),contentSortName,null);
+                if (!"浙江岩华文化科技有限公司".equals(contentSort)){
+                    continue;
+                }
+                String contentId = getCellInfo(sheet.getRow(i),copyrightIdNo,null).toString();
+                if (StringUtils.isNotEmpty(contentId)) {
+                    map.put("copyrightId",contentId);
+                }else {
+                    continue;
+                }
+                String label = (String) getCellInfo(sheet.getRow(i),labelNo,null);
+                String sort = (String) getCellInfo(sheet.getRow(i),sortlNo,null);
+                map.put("label",sort+"#"+label);
+                maps.add(map);
+            }
+        }catch (IOException | InvalidFormatException e){
+            log.error("parse excel file error :", e);
+            throw new EngineException("读取excel失败");
+        }
+        return maps;
     }
 
 

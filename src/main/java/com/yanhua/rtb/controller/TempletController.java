@@ -80,8 +80,8 @@ public class TempletController {
         return iTempletService.deleteTemplet(templetId);
     }
 
-    @ApiOperation(value = "更新单个模板",httpMethod = "PUT",notes = "根据模板id,更新模板")
-    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}",method = RequestMethod.PUT)
+    @ApiOperation(value = "更新单个模板",httpMethod = "POST",notes = "根据模板id,更新模板")
+    @RequestMapping(value = "/{channelId}/{columnId}/{templetId}",method = RequestMethod.POST)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "templetId", value = "模板id", required = true, dataType = "Long")
@@ -120,7 +120,7 @@ public class TempletController {
     @ResponseBody
     public List<TempletVo> selectTempletVo(@PathVariable Integer channelId, @PathVariable Integer columnId){
         irColumnService.checkColumnAndArea(channelId,columnId);
-        List<RColumn> rColumns = irColumnService.list(new QueryWrapper<RColumn>().lambda().eq(RColumn::getParColumnId,columnId));
+        List<RColumn> rColumns = irColumnService.list(new QueryWrapper<RColumn>().lambda().eq(RColumn::getParColumnId,columnId).orderByDesc(RColumn::getColumnOrder).orderByDesc(RColumn::getUpdateTime));
         return rColumns.stream().filter(Objects::nonNull).map(rColumn -> {
             TempletVo templetVo = new TempletVo();
             BeanUtils.copyProperties(rColumn,templetVo);

@@ -8,6 +8,7 @@ package com.yanhua.rtb.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhua.rtb.entity.Area;
+import com.yanhua.rtb.entity.RColumn;
 
 import java.util.List;
 
@@ -35,5 +36,7 @@ public interface IAreaService extends IService<Area> {
      * @param channelId:
      * @return void
      */
-    void checkArea(Integer channelId);
+    Area checkArea(Integer channelId);
+
+    List<RColumn> copyAreaAll(Area area);
 }

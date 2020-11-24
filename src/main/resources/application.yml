@@ -51,7 +51,7 @@ mybatis-plus:
       id-type: auto
       #字段策略
       insert-strategy: ignored
-      update-strategy: ignored
+      update-strategy: NOT_NULL #ignored
       #驼峰下划线转换
       table-underline: true
       # 逻辑删除配置
@@ -66,16 +66,24 @@ mybatis-plus:
 #      db-type: MYSQL
 
 warehousing:
-  cnUnicom:
+
+  cnUnicom: #联通
     url: http://101.71.22.37:36002/qk/sync/channelsync/query
-    code: 3000007497
-    md5: B26795DB8A716BB7
-    fileUrl: http://listen.10155.com/listener
+#    url: http://crbt.yanhuamedia.tv/qk/sync/channelsync/query
+    yanhua:
+      code: 3000007497
+      md5: B26795DB8A716BB7
+    lizi:
+      code: 3000007928
+      md5: 02EE84236CAB5974
+    fileUrl: http://listen.10155.com/listener//90115000/mv_vod/volteposter/horizontalpath/20201023/1319566610898452482.jpg
     user: 18720552070
   chinaMobile:
     url: https://m.12530.com/order/rest/vrbt/product/query.do?data=
-    tokenUrl: https://vcrbt-migu.yanhuamedia.tv/vcrbt/aa/ring/login?v=1
+    tokenUrl: https://vcrbt-migu.yanhuamedia.tv:28082/aa/ring/login?v=1
     channelCode: 00210OX
+  chinaTelecom:
+    url: http://192.168.0.95:8082/vrs/tyVideo/videoQuery?v=1&channelId=10010
 
 
 mams:

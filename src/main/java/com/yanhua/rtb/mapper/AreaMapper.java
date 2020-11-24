@@ -26,7 +26,7 @@ public interface AreaMapper extends BaseMapper<Area> {
 
 //    @Update("UPDATE ")
 //    boolean updateStatus(Integer status);
-    @Delete("DELETE FROM area WHERE area_id = #{id}")
+    @Delete("DELETE FROM area WHERE channel_id = #{id}")
     int delByAreaId(Integer id);
 
 //    updateById()

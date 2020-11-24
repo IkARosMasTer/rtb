@@ -10,6 +10,8 @@
  */
 package com.yanhua.rtb.service;
 
+import com.yanhua.rtb.entity.ContentSpxl;
+
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +41,15 @@ public interface WarehousingService {
      * @return java.util.List<java.lang.String>
      * @author Emiya
      */
-    List<String> getChinaMobile(List<Map<String,String>> copyrightIds);
+    List<String> getChinaMobile(List<Map<String,String>> copyrightIds,String token);
 
 
+    List<String> getChinaTelecom(List<Map<String,String>> copyrightIds);
+
+
+    String testt() throws InterruptedException;
+
+
+    String operate(StringBuilder stringBuilder, ContentSpxl contentSpxl);
 
 }

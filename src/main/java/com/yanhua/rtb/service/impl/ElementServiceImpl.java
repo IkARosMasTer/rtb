@@ -57,46 +57,13 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
         return count(new QueryWrapper<Element>().lambda().eq(Element::getColumnId,templetId));
     }
 
-    @Override
-    public ElementVo saveElement(ElementVo elementVo) {
-        Integer templetId = elementVo.getColumnId();
-        //判断是否存在content_id
-        String contentSpxlId = elementVo.getContentSpxlId();
-        ContentSpxl contentSpxl = iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,contentSpxlId).last("LIMIT 1"));
-        if (contentSpxl==null){
-            //无对应的彩铃内容
-            log.warn("saveElement=========>无对应的彩铃内容:模板id{}",templetId);
-            throw new EngineException("模板"+templetId+"无对应的彩铃内容");
-        }
-        //todo:
-//        elementVo.setElementName(contentSpxl.getContentName());
-        elementVo.setElementOrder(countElementNumByTempletId(templetId)+1);
-        Element element = new Element();
-        BeanUtils.copyProperties(elementVo,element);
-        Integer templateId = elementVo.getTemplateId();
-        //获取模板样式
-        if (templateId!=null&&templateId>0){
-            Template template = iTemplateService.getById(templateId);
-            TemplateVo templateVo = new TemplateVo();
-            BeanUtils.copyProperties(template,templateVo);
-            elementVo.setEleTemplateVo(templateVo);
-        }
-        //插入模板
-        if (save(element)){
-            elementVo.setElementId(element.getElementId());
-        }else {
-            //插入失败。未生成推荐位id
-            log.error("新增模板==========>插入失败,未生成推荐位id:模板id{}",templateId);
-            throw new EngineException("插入失败,未生推荐位板id:模板id"+templateId);
-        }
-        return elementVo;
-    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String deleteElement(Integer elementId) {
         try{
             checkElement(elementId);
+            Element element = getById(elementId);
             int num = elementMapper.deleteById(elementId);
             return "删除推荐位"+num+"个成功！";
         }catch (Exception e) {
@@ -136,9 +103,6 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
     public String updateElement(ElementVo elementVo) {
         Integer templetId = elementVo.getColumnId();
         Element element = new Element();
-
-//        elementVo.setElementOrder(countElementNumByTempletId(templetId)+1);
-        BeanUtils.copyProperties(elementVo,element);
         Integer templateId = elementVo.getTemplateId();
         //获取模板样式
         if (templateId!=null&&templateId>0){
@@ -147,7 +111,72 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
             BeanUtils.copyProperties(template,templateVo);
             elementVo.setEleTemplateVo(templateVo);
         }
+
+        if (elementVo.getElementOrder() == null || elementVo.getElementOrder() < 1) {
+            //找出原栏目的排序号
+            Map<String, Object> map = this.getMap(new QueryWrapper<Element>().lambda().select(Element::getElementOrder).eq(Element::getElementId, elementVo.getElementId()));
+            elementVo.setElementOrder((Integer) map.get("element_order"));
+        } else {
+            //更新且有排序号,做维护
+            Map<String, Object> map = this.getMap(new QueryWrapper<Element>().lambda().select(Element::getElementOrder).eq(Element::getElementId, elementVo.getElementId()));
+            if (map == null || map.size() < 1) {
+                //说明没有查出该栏目
+                throw new EngineException("该推荐位" + elementVo.getElementId() + elementVo.getElementName()+"不存在");
+            }
+            //作比较
+            Integer order = (Integer) map.get("element_order");
+            //新的比旧的大
+            if (elementVo.getElementOrder() > order) {
+                //调整当前后面的排序-1  后移
+                int bigOrder = elementVo.getElementOrder();
+                int decrFlag = elementMapper.decrElementOrder(order, bigOrder+1, templetId);
+                log.info("推荐位更新维护了" + decrFlag + "条已有推荐位");
+                int upd = elementMapper.updateSelfOrder(bigOrder, elementVo.getElementId());
+                log.info("推荐位更新维护自身" + upd + "条推荐位");
+            } else if (elementVo.getElementOrder() < order) {
+                //前移
+                int smallOrder = elementVo.getElementOrder() < 1 ? 1 : elementVo.getElementOrder();
+                elementVo.setElementOrder(smallOrder);
+                int incrFlag = elementMapper.incrElementOrder(smallOrder - 1, order, templetId);
+                log.info("推荐位更新维护了" + incrFlag + "条已有推荐位");
+                int upd = elementMapper.updateSelfOrder(smallOrder, elementVo.getElementId());
+                log.info("推荐位更新维护自身" + upd + "条推荐位");
+            }
+        }
+        //维护更新时所在栏目下的所有模板的顺序
+//        Map<String,Object> map = getMap(new QueryWrapper<Element>().lambda().select(Element::getElementOrder).eq(Element::getElementId,element.getElementId()));
+//        Integer order = (Integer) map.get("element_order");
+//        if (element.getElementOrder()==null||element.getElementOrder()<1){
+//            //找出原栏目的排序号
+//            element.setElementOrder(order);
+//        }else if (element.getElementId()!=null&&element.getElementId()>0){
+//            //更新且有排序号
+//            //作比较
+//            //新的比旧的大
+//            if (element.getElementOrder()>order){
+//                //调整当前后面的排序-1  后移
+////                int decrFlag = rColumnMapper.decrColumnOrder(order,templetVo.getColumnOrder()+1,columnId);
+//
+//                Integer num = countElementNumByTempletId(templetId);
+//                int bigOrder = element.getElementOrder()>num?num:element.getElementOrder();
+//                int decrFlag = elementMapper.updateOrder(bigOrder,order,templetId);
+//                int upd = elementMapper.updateSelfOrder(bigOrder,element.getElementId());
+//            }else if (element.getElementOrder()<order){
+//                //前移
+////                int incrFlag = rColumnMapper.incrColumnOrder(templetVo.getColumnOrder()-1,order,columnId);
+//
+//                int smallOrder = element.getElementOrder()<1?1:element.getElementOrder();
+//                int incrFlag = elementMapper.updateOrder(smallOrder,order,templetId);
+//                int upd = elementMapper.updateSelfOrder(smallOrder,element.getElementId());
+//            }
+//        }else {
+//            throw new EngineException("模板id参数错误");
+//        }
+
+
         //更新模板
+        //复制然后插入
+        BeanUtils.copyProperties(elementVo,element);
         if (updateById(element)){
             elementVo.setColumnId(element.getColumnId());
         }else {
@@ -155,7 +184,7 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
             log.error("更新推荐位==========>更新失败:模板id{}",templateId);
             throw new EngineException("更新失败:模板id"+templateId);
         }
-        return "更新推荐位"+templateId+"成功!";
+        return "更新推荐位"+templetId+"成功!";
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -166,7 +195,8 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
             throw new EngineException(PARAM_IS_INVALID_OR_BLANK);
         }
         //先删除旧推荐位
-        deleteElementAll(templetId);
+//        deleteElementAll(templetId);
+        AtomicInteger i = new AtomicInteger();
         List<Element> elements = elementVos.stream().filter(Objects::nonNull).map(elementVo -> {
             elementVo.setColumnId(templetId);
             if (elementVo.getCreateTime()==null){
@@ -177,8 +207,49 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
             }
             Element element = new Element();
             BeanUtils.copyProperties(elementVo,element);
+            //维护推荐位顺序
+            Map<String,Object> map = getMap(new QueryWrapper<Element>().lambda().select(Element::getElementOrder).eq(Element::getElementId,element.getElementId()));
+            Integer order = (Integer) map.get("element_order");
+            if (element.getElementOrder()==null||element.getElementOrder()<1){
+                //如果是更新
+                if (element.getElementId()!=null&&element.getElementId()>0){
+                    //找出原栏目的排序号
+                    element.setElementOrder(order);
+                }else {
+                    //如果是新增,排序号=总数+1
+                    i.getAndIncrement();
+                    element.setElementOrder(countElementNumByTempletId(templetId)+i.intValue());
+                }
+            }else if (element.getElementId()!=null&&element.getElementId()>0){
+                //更新且有排序号
+                //作比较
+                //新的比旧的大
+                if (element.getElementOrder()>order){
+                    //直接将当前与库中占有的模板进行替换
+                    Integer num = countElementNumByTempletId(templetId);
+                    int bigOrder = element.getElementOrder()>num?num:element.getElementOrder();
+                    int ee = elementMapper.updateOrder(bigOrder,order,templetId);
+                    int ff = elementMapper.updateSelfOrder(bigOrder,element.getElementId());
+                    //调整当前后面的排序-1  后移
+//                            templetVo.setColumnOrder(bigOrder);
+//                            int decrFlag = rColumnMapper.decrColumnOrder(order,bigOrder+1,columnId);
+                }else if (element.getElementOrder()<order){
+                    int smallOrder = element.getElementOrder()<1?1:element.getElementOrder();
+                    int ee = elementMapper.updateOrder(smallOrder,order,templetId);
+                    int ff = elementMapper.updateSelfOrder(smallOrder,element.getElementId());
+                    //前移
+//                            int incrFlag = rColumnMapper.incrColumnOrder(smallOrder-1,order,columnId);
+                }
+            }else {
+                throw new EngineException("模板id参数错误");
+            }
+
             return element;
         }).collect(Collectors.toList());
+
+
+
+
         if (saveOrUpdateBatch(elements)){
             return elements.stream().filter(element -> element.getElementId()!=null).map(Element::getElementId).collect(Collectors.toList());
 //            String ret = StringUtils.join(elements.stream().filter(element -> element.getElementId()!=null).map(Element::getElementId).collect(Collectors.toList()),",");
@@ -215,8 +286,41 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
                     }
                     element.setUpdateTime(new Date());
                     element.setTemplateId(element.getEleTemplate().getTemplateId());
-                    j.getAndIncrement();
-                    element.setElementOrder(countElementNumByTempletId(element.getColumnId())+j.intValue());
+                    //维护更新时所在栏目下的所有模板的顺序
+                    Map<String,Object> map = getMap(new QueryWrapper<Element>().lambda().select(Element::getElementOrder).eq(Element::getColumnId,element.getColumnId()));
+                    Integer order = (Integer) map.get("element_order");
+                    if (element.getElementOrder()==null||element.getElementOrder()<1){
+                        //如果是更新
+                        if (element.getElementId()!=null&&element.getElementId()>0){
+                            //找出原栏目的排序号
+                            element.setElementOrder(order);
+                        }else {
+                            //如果是新增,排序号=总数+1
+                            j.getAndIncrement();
+                            element.setElementOrder(countElementNumByTempletId(element.getColumnId())+j.intValue());
+                        }
+                    }else if (element.getElementId()!=null&&element.getElementId()>0){
+                        //更新且有排序号
+                        //作比较
+                        //新的比旧的大
+                        if (element.getElementOrder()>order){
+                            //调整当前后面的排序-1  后移
+                            Integer num = countElementNumByTempletId(element.getColumnId());
+                            int bigOrder = element.getElementOrder()>num?num:element.getElementOrder();
+                            int ee = elementMapper.updateOrder(bigOrder,order,element.getColumnId());
+                            int ff = elementMapper.updateSelfOrder(bigOrder,element.getElementId());
+                            //调整当前后面的排序-1  后移
+//                            templetVo.setColumnOrder(bigOrder);
+//                            int decrFlag = rColumnMapper.decrColumnOrder(order,bigOrder+1,columnId);
+                        }else if (element.getElementOrder()<order){
+                            int smallOrder = element.getElementOrder()<1?1:element.getElementOrder();
+                            int ee = elementMapper.updateOrder(smallOrder,order,element.getColumnId());
+                            int ff = elementMapper.updateSelfOrder(smallOrder,element.getElementId());
+//                            int incrFlag = elementMapper.incrElementOrder(element.getElementOrder()-1,order,element.getColumnId());
+                        }
+                    }else {
+                        throw new EngineException("模板id参数错误");
+                    }
                     if (StringUtils.isEmpty(element.getElementName())){
                         ContentSpxl contentSpxl = iContentSpxlService.getOne(new QueryWrapper<ContentSpxl>().lambda().eq(ContentSpxl::getContentId,element.getContentSpxlId()).last("LIMIT 1"));
                         if (contentSpxl!=null){
@@ -267,5 +371,11 @@ public class ElementServiceImpl extends ServiceImpl<ElementMapper, Element> impl
     @Override
     public List<ElementVo> getElementAlls(Integer templetId) {
         return elementMapper.getElementResult(templetId);
+    }
+
+
+    @Override
+    public Integer getMaxElementOrder(Integer templetId) {
+        return elementMapper.getMaxElementOrder(templetId);
     }
 }

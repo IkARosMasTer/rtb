@@ -55,7 +55,7 @@ public interface IRColumnService extends IService<RColumn> {
      * @param parColumnId:
      * @return int
      */
-    int countNumByParColumnId(Integer parColumnId);
+    int countNumByParColumnId(Integer parColumnId,Integer channelId);
 
     /**
      *
@@ -65,9 +65,29 @@ public interface IRColumnService extends IService<RColumn> {
      * @param columnId:
      * @return void
      */
-    void checkColumnAndArea(Integer channelId,Integer columnId);
+    boolean checkColumnAndArea(Integer channelId,Integer columnId);
+
+    RColumn checkColumn(Integer columnId);
 
 
     String deleteColumn(Integer columnId);
+
+    ColumnVo updateOrSaveColumn(ColumnVo columnVo);
+
+    ColumnVo maintainOrder(ColumnVo columnVo);
+
+    String maintainColumns(List<ColumnVo> columnVos,Integer channelId);
+
+
+    /**
+     *
+     * @description: 拷贝栏目集合进数据库
+     *      <p/>
+     * @param rColumns:
+     * @param channelId:
+     * @return java.util.List<com.yanhua.rtb.vo.ColumnVo>
+     */
+    List<ColumnVo> importColumnList(List<RColumn> rColumns,Integer channelId);
+
 
 }

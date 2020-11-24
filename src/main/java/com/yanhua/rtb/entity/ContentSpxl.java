@@ -9,6 +9,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
@@ -234,5 +235,9 @@ public class ContentSpxl extends Model<ContentSpxl> {
 	@ApiModelProperty(name = "fileList" , value = "信息详细")
 	@TableField(exist = false)
 	private List<ContentSpxlDetail> fileList;
+
+	@TableLogic( value = "0" ,delval = "1")
+	@ApiModelProperty(name = "status" , value = "状态（0：商用；1：过期）")
+	private Integer status;
 
 }

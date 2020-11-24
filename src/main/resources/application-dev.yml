@@ -1,106 +1,106 @@
-#数据源配置
-spring:
-  redis:
-    ##redis 单机环境配置
-    host: 183.131.15.11
-    port: 6979
-    password: bms_pwd~!@123
-    #    host: 127.0.0.1
-    #    port: 6379
-    #    password:
-    database: 10
-    #    database: 0
-    ssl: false
-    ##redis 集群环境配置
-    #cluster:
-    #  nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003
-    #  commandTimeout: 5000
-  #连接池配置
-  datasource:
-#    hikari:
-    primary:
-      type: com.zaxxer.hikari.HikariDataSource
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: 5zkgkdr2ol6
-      hikari:
-        pool-name: Retail_HikariCP11
-        maximum-pool-size: 30 #连接池最大连接数，默认是10
-        max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
-        idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
-        connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
-        minimum-idle: 5 #最小空闲连接数量
-        connection-test-query: SELECT 1
-        auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
-    quartz:
-      type: com.zaxxer.hikari.HikariDataSource
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: 5zkgkdr2ol6
-      hikari:
-        pool-name: Retail_HikariCP22
-        maximum-pool-size: 30 #连接池最大连接数，默认是10
-        max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
-        idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
-        connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
-        minimum-idle: 5 #最小空闲连接数量
-        connection-test-query: SELECT 1
-        auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
-
-
-
-  quartz:
-    scheduler-name: clusteredScheduler # Scheduler 名字。默认为 schedulerName
-    job-store-type: jdbc # Job 存储器类型。默认为 memory 表示内存，可选 jdbc 使用数据库。
-    auto-startup: true # Quartz 是否自动启动
-    startup-delay: 3 # 延迟 N 秒启动
-    wait-for-jobs-to-complete-on-shutdown: true # 应用关闭时，是否等待定时任务执行完成。默认为 false ，建议设置为 true
-    overwrite-existing-jobs: true # 是否覆盖已有 Job 的配置
-# 这种不需要
-#    dataSource:
-#      quartz:
-#        driver: com.mysql.cj.jdbc.Driver
-#        URL: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-#        user: root
-#        password: 5zkgkdr2ol6
-#        maxConnections: 10
-    #相关属性配置
-    properties:
-      org:
-        quartz:
-          scheduler:
-            instanceName: MyQuartzScheduler
-            instanceId: AUTO
-          jobStore:
-            class: org.quartz.impl.jdbcjobstore.JobStoreTX
-            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            tablePrefix: qrtz_ #Quartz 表前缀
-            isClustered: true
-            clusterCheckinInterval: 10000
-            useProperties: true
-            dataSource: quartzDataSource #为什么这里是这个名称，是因为在数据源配置文件中，将quartz的数据源bean取名为quartzDataSource了
-# 如果上面已经配过hikaricp的数据源，则下面的就不需要了。下面这种也是可以用的
-#          dataSource:
-#            quartz:
-#              provider: hikaricp
-##              driver: com.mysql.jdbc.Driver
-#              driver: com.mysql.cj.jdbc.Driver
-#              URL: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-##              URL: jdbc:mysql://localhost:3306/jobconfig?useUnicode=true&characterEncoding=utf8
-#              user: root
-#              password: 5zkgkdr2ol6
-#              maxConnections: 10
-          threadPool:
-            class: org.quartz.simpl.SimpleThreadPool # 线程池类型
-            threadCount: 25 # 线程池大小。默认为 10 。
-            threadPriority: 5 # 线程优先级
-            threadsInheritContextClassLoaderOfInitializingThread: true
-
-    #初始化表结构
-    jdbc:
-      initialize-schema: never  # 是否自动使用 SQL 初始化 Quartz 表结构。这里设置成 never ，我们手动创建表结构。
-
-swagger:
-  enable: true
+##数据源配置
+#spring:
+#  redis:
+#    ##redis 单机环境配置
+#    host: 183.131.15.11
+#    port: 6979
+#    password: bms_pwd~!@123
+#    #    host: 127.0.0.1
+#    #    port: 6379
+#    #    password:
+#    database: 10
+#    #    database: 0
+#    ssl: false
+#    ##redis 集群环境配置
+#    #cluster:
+#    #  nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003
+#    #  commandTimeout: 5000
+#  #连接池配置
+#  datasource:
+##    hikari:
+#    primary:
+#      type: com.zaxxer.hikari.HikariDataSource
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#      username: root
+#      password: 5zkgkdr2ol6
+#      hikari:
+#        pool-name: Retail_HikariCP11
+#        maximum-pool-size: 30 #连接池最大连接数，默认是10
+#        max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+#        idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
+#        connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
+#        minimum-idle: 5 #最小空闲连接数量
+#        connection-test-query: SELECT 1
+#        auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+#    quartz:
+#      type: com.zaxxer.hikari.HikariDataSource
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#      username: root
+#      password: 5zkgkdr2ol6
+#      hikari:
+#        pool-name: Retail_HikariCP22
+#        maximum-pool-size: 30 #连接池最大连接数，默认是10
+#        max-lifetime: 180000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+#        idle-timeout: 60000 #空闲连接存活最大时间，默认600000（10分钟）
+#        connection-timeout: 20000 #数据库连接超时时间,默认30秒，即30000
+#        minimum-idle: 5 #最小空闲连接数量
+#        connection-test-query: SELECT 1
+#        auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+#
+#
+#
+#  quartz:
+#    scheduler-name: clusteredScheduler # Scheduler 名字。默认为 schedulerName
+#    job-store-type: jdbc # Job 存储器类型。默认为 memory 表示内存，可选 jdbc 使用数据库。
+#    auto-startup: true # Quartz 是否自动启动
+#    startup-delay: 3 # 延迟 N 秒启动
+#    wait-for-jobs-to-complete-on-shutdown: true # 应用关闭时，是否等待定时任务执行完成。默认为 false ，建议设置为 true
+#    overwrite-existing-jobs: true # 是否覆盖已有 Job 的配置
+## 这种不需要
+##    dataSource:
+##      quartz:
+##        driver: com.mysql.cj.jdbc.Driver
+##        URL: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+##        user: root
+##        password: 5zkgkdr2ol6
+##        maxConnections: 10
+#    #相关属性配置
+#    properties:
+#      org:
+#        quartz:
+#          scheduler:
+#            instanceName: MyQuartzScheduler
+#            instanceId: AUTO
+#          jobStore:
+#            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+#            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+#            tablePrefix: qrtz_ #Quartz 表前缀
+#            isClustered: true
+#            clusterCheckinInterval: 10000
+#            useProperties: true
+#            dataSource: quartzDataSource #为什么这里是这个名称，是因为在数据源配置文件中，将quartz的数据源bean取名为quartzDataSource了
+## 如果上面已经配过hikaricp的数据源，则下面的就不需要了。下面这种也是可以用的
+##          dataSource:
+##            quartz:
+##              provider: hikaricp
+###              driver: com.mysql.jdbc.Driver
+##              driver: com.mysql.cj.jdbc.Driver
+##              URL: jdbc:mysql://183.131.15.25:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+###              URL: jdbc:mysql://localhost:3306/jobconfig?useUnicode=true&characterEncoding=utf8
+##              user: root
+##              password: 5zkgkdr2ol6
+##              maxConnections: 10
+#          threadPool:
+#            class: org.quartz.simpl.SimpleThreadPool # 线程池类型
+#            threadCount: 25 # 线程池大小。默认为 10 。
+#            threadPriority: 5 # 线程优先级
+#            threadsInheritContextClassLoaderOfInitializingThread: true
+#
+#    #初始化表结构
+#    jdbc:
+#      initialize-schema: never  # 是否自动使用 SQL 初始化 Quartz 表结构。这里设置成 never ，我们手动创建表结构。
+#
+#swagger:
+#  enable: true

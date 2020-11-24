@@ -11,27 +11,23 @@
 package com.yanhua.rtb.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yanhua.rtb.entity.ContentSpxlDetail;
 import com.yanhua.rtb.util.CustomForEach;
 import com.yanhua.rtb.util.DateUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 〈功能简述〉<br>
@@ -247,42 +243,112 @@ public class ContentSpxlVo implements Serializable {
     @ApiModelProperty(name = "fileList" , value = "彩铃文件数组")
     private List<ContentSpxlDetailVo> fileList;
 
+    @ApiModelProperty(name = "status" , value = "状态（0：商用；1：过期）")
+    private Integer status;
+
     public ContentSpxlVo() {
     }
 
-    public ContentSpxlVo(CtccContentSpxlVo ctccContentSpxlVo, String label, String copyrightId) throws ParseException {
+    public ContentSpxlVo(CmccContentSpxlVo cmccContentSpxlVo, String label, String copyrightId) throws ParseException {
 
-        this.contentId = ctccContentSpxlVo.getContentId();
-        this.contentName = ctccContentSpxlVo.getToneName();
-        this.suggestPrice = ctccContentSpxlVo.getPrice();
-        this.validDate = DateUtils.string2Date(ctccContentSpxlVo.getToneValidDay(),"yyyy-MM-dd");
-        this.copyrightId = ctccContentSpxlVo.getMusicId();
+        this.contentId = cmccContentSpxlVo.getContentId();
+        this.contentName = cmccContentSpxlVo.getToneName();
+        this.suggestPrice = cmccContentSpxlVo.getPrice();
+        this.validDate = DateUtils.string2Date(cmccContentSpxlVo.getToneValidDay(),"yyyy-MM-dd");
+        if (validDate.before(new Date())){
+            //过期版权
+            this.status = 1;
+        }else {
+            this.status = 0;
+        }
+        this.copyrightId = cmccContentSpxlVo.getMusicId();
         this.label = label;
         //来源
         this.attribution = "699052".equals(StringUtils.substring(copyrightId,0,6))?1:9;
         //cpId
         this.cpId = Integer.valueOf(StringUtils.substring(copyrightId,0,6));
-        List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos = ctccContentSpxlVo.getFileInfos();
-        if (ctccContentSpxlDetailVos!=null&&ctccContentSpxlDetailVos.size()>0){
+        List<CmccContentSpxlDetailVo> cmccContentSpxlDetailVos = cmccContentSpxlVo.getFileInfos();
+        if (cmccContentSpxlDetailVos !=null&& cmccContentSpxlDetailVos.size()>0){
             List<ContentSpxlDetailVo> list = new ArrayList<>();
             //处理图片
-            CustomForEach.forEach(ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo!=null&&("109".equals(ctccContentSpxlDetailVo.getType())||"115".equals(ctccContentSpxlDetailVo.getType()))),
+            CustomForEach.forEach(cmccContentSpxlDetailVos.stream().filter(cmccContentSpxlDetailVo -> cmccContentSpxlDetailVo !=null&&("113".equals(cmccContentSpxlDetailVo.getType())||"111".equals(cmccContentSpxlDetailVo.getType()))),
                     (ctcc,breaker) ->{
-                        if ("109".equals(ctcc.getType())&& StringUtils.isNotEmpty(ctcc.getFilePath())){
+                        if ("113".equals(ctcc.getType())&& StringUtils.isNotEmpty(ctcc.getFilePath())){
                             this.verPoster = ctcc.getFilePath();
                             breaker.stop();
-                        }else if ("115".equals(ctcc.getType())){
+                        }else if ("111".equals(ctcc.getType())){
                             this.verPoster = ctcc.getFilePath();
                         }
                     });
             //处理视频
-            CustomForEach.forEach(ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo!=null&&("3".equals(ctccContentSpxlDetailVo.getType())||"5".equals(ctccContentSpxlDetailVo.getType()))),
+            CustomForEach.forEach(cmccContentSpxlDetailVos.stream().filter(cmccContentSpxlDetailVo -> cmccContentSpxlDetailVo !=null&&("3".equals(cmccContentSpxlDetailVo.getType())||"5".equals(cmccContentSpxlDetailVo.getType()))),
                     (ctcc,breaker) ->{
                         ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
-                        contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getContentId());
+                        contentSpxlDetailVo.setContentId(cmccContentSpxlVo.getContentId());
                         contentSpxlDetailVo.setFilePath(ctcc.getFilePath());
                         list.add(contentSpxlDetailVo);
                     });
+            this.fileList = list;
+        }
+    }
+    public ContentSpxlVo(CtccContentSpxlVo ctccContentSpxlVo, String label, String copyrightId) throws ParseException {
+
+        this.contentId = ctccContentSpxlVo.getRingId();
+        this.contentName = ctccContentSpxlVo.getVideoName();
+        this.suggestPrice = ctccContentSpxlVo.getPrice();
+        this.validDate = DateUtils.string2Date(ctccContentSpxlVo.getExpirationDate(), "yyyy-MM-dd");
+        this.copyrightId = ctccContentSpxlVo.getResourceId() == null ? copyrightId : ctccContentSpxlVo.getResourceId();
+        this.label = label;
+        //来源 岩华科技
+        this.attribution = 1;
+//        this.cpId = Integer.valueOf(StringUtils.substring(copyrightId,0,6));
+        List<CtccContentSpxlImgVo> ctccContentSpxlImgVos = ctccContentSpxlVo.getImageList();
+        if (ctccContentSpxlImgVos != null && ctccContentSpxlImgVos.size() > 0) {
+            //处理图片
+            CustomForEach.forEach(ctccContentSpxlImgVos.stream(),
+                    (ctcc, breaker) -> {
+                        if (ctcc != null && ctcc.getType() == 2 && StringUtils.isNotEmpty(ctcc.getPath()) && "jpg".equals(ctcc.getFormat())) {
+                            this.verPoster = ctcc.getPath();
+                            breaker.stop();
+                        }
+                    });
+        }
+        List<ContentSpxlDetailVo> list = new ArrayList<>();
+        List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos = ctccContentSpxlVo.getFileList();
+        if (ctccContentSpxlDetailVos != null && ctccContentSpxlDetailVos.size() > 0) {
+            int[] ints = {1, 7, 8, 9, 13};
+            //处理视频
+            Supplier<Stream<CtccContentSpxlDetailVo>> spxlDetailVoStream = () -> ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo != null && ArrayUtils.contains(ints, ctccContentSpxlDetailVo.getQuality())).sorted(Comparator.reverseOrder());
+            //订购类型
+            List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos1 = spxlDetailVoStream.get().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo.getType() == 1).collect(Collectors.toList());
+            if (ctccContentSpxlDetailVos1.size() > 0) {
+                CtccContentSpxlDetailVo ctccContentSpxlDetailVo = ctccContentSpxlDetailVos1.get(0);
+                ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
+                contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getRingId());
+                contentSpxlDetailVo.setFilePath(ctccContentSpxlDetailVo.getFilePath());
+                contentSpxlDetailVo.setFileSize(ctccContentSpxlDetailVo.getFileSize().doubleValue());
+                contentSpxlDetailVo.setFilePlayTime(ctccContentSpxlDetailVo.getDuration().intValue());
+                contentSpxlDetailVo.setFileCode(ctccContentSpxlDetailVo.getVideoFormat());
+                contentSpxlDetailVo.setSamplebitrate(ctccContentSpxlDetailVo.getVideoBitrate());
+                contentSpxlDetailVo.setSamplingrate(ctccContentSpxlDetailVo.getAudioRate().toString());
+                contentSpxlDetailVo.setResolution(ctccContentSpxlDetailVo.getChannel() == 1 ? "单声道" : "双声道");
+                list.add(contentSpxlDetailVo);
+            }
+            //试看类型
+            List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos2 = spxlDetailVoStream.get().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo.getType() == 2).collect(Collectors.toList());
+            if (ctccContentSpxlDetailVos2.size() > 0) {
+                CtccContentSpxlDetailVo ctccContentSpxlDetailVo = ctccContentSpxlDetailVos2.get(0);
+                ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
+                contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getRingId());
+                contentSpxlDetailVo.setFilePath(ctccContentSpxlDetailVo.getFilePath());
+                contentSpxlDetailVo.setFileSize(ctccContentSpxlDetailVo.getFileSize().doubleValue());
+                contentSpxlDetailVo.setFilePlayTime(ctccContentSpxlDetailVo.getDuration().intValue());
+                contentSpxlDetailVo.setFileCode(ctccContentSpxlDetailVo.getVideoFormat());
+                contentSpxlDetailVo.setSamplebitrate(ctccContentSpxlDetailVo.getVideoBitrate());
+                contentSpxlDetailVo.setSamplingrate(ctccContentSpxlDetailVo.getAudioRate().toString());
+                contentSpxlDetailVo.setResolution(ctccContentSpxlDetailVo.getChannel() == 1 ? "单声道" : "双声道");
+                list.add(contentSpxlDetailVo);
+            }
             this.fileList = list;
         }
     }

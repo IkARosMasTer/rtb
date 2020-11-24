@@ -11,10 +11,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yanhua.rtb.vo.ColumnVo;
 import com.yanhua.rtb.vo.SpecialVo;
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Mapper;
 import com.yanhua.rtb.entity.RColumn;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -59,6 +61,59 @@ public interface RColumnMapper extends BaseMapper<RColumn> {
 
     @Select("select * from `column` a where a.par_column_id = #{columnId}")
     IPage<SpecialVo> getByParColumnId(@Param("columnId")Integer columnId);
+
+    /**
+     *
+     * @description: 删除时维护
+     *      <p/>   
+     * @param channelId: 
+     * @param small: 
+     * @param parColumnId: 
+     * @return int
+     */
+//    @Update("update `r_column` a set a.column_order = column_order-1 where a.channel_id = #{channelId} and a.par_column_id = #{parColumnId} and a.column_order > #{small} ")
+//    int delColumnOrder(@Param("channelId") Integer channelId,@Param("small")Integer small,@Param("parColumnId") Integer parColumnId);
+
+    
+    @Update("update `r_column` a set a.column_order = column_order-1 where a.channel_id = #{channelId} and a.par_column_id = #{parColumnId} and a.column_order > #{small} and a.column_order < #{big}")
+    int decrColumnOrder(@Param("channelId") Integer channelId,@Param("small")Integer small,@Param("big") Integer big,@Param("parColumnId") Integer parColumnId);
+    @Update("update `r_column` a set a.column_order = column_order+1 where a.channel_id = #{channelId} and a.par_column_id = #{parColumnId} and a.column_order > #{small} and a.column_order < #{big}")
+    int incrColumnOrder(@Param("channelId") Integer channelId,@Param("small")Integer small,@Param("big") Integer big,@Param("parColumnId") Integer parColumnId);
+
+    /**
+     *
+     * @description: 获取渠道下栏目的最大序号值
+     *      <p/>
+     * @param channelId:
+     * @param parColumnId:
+     * @return int
+     */
+    @Select("select MAX(a.column_order) AS column_order FROM `r_column` a WHERE a.channel_id = #{channelId} AND a.par_column_id = #{parColumnId} ")
+    int getMaxColumnOrder(@Param("channelId") Integer channelId,@Param("parColumnId") Integer parColumnId);
+
+
+    /**
+     *
+     * @description: 替换两者的排序
+     *      <p/>   
+     * @param old: 
+     * @param now: 
+     * @param parColumnId: 
+     * @return int
+     */
+    @Update("update `r_column` a set a.column_order = #{now} where a.par_column_id = #{parColumnId} and a.column_order = #{old}")
+    int updateOrder(@Param("old") Integer old,@Param("now") Integer now,@Param("parColumnId") Integer parColumnId);
+    
+    /**
+     *
+     * @description: 实时在维护好新排序后直接将当前的序号先更新到表
+     *      <p/>   
+     * @param now: 
+     * @param columnId:
+     * @return int
+     */
+    @Update("update `r_column` a set a.column_order = #{now} where a.column_id = #{columnId}")
+    int updateSelfOrder(@Param("now") Integer now,@Param("columnId") Integer columnId);
 
 //    @Select("select * from `column` a where a.par_column_id = #{columnId}")
 //    IPage<Column> getByParColumnId2(IPage<Column>() pagination, @Param("columnId") Integer columnId);

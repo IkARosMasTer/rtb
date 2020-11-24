@@ -75,8 +75,16 @@ public class RColumn extends Model<RColumn> {
 	private Date updateTime;
 
 	@TableField(exist = false)
-	@ApiModelProperty(name = "elementList" , value = "推荐位数组")
+	@ApiModelProperty(name = "elementVoList" , value = "推荐位视图数组")
 	private List<ElementVo> elementVoList;
+
+	@TableField(exist = false)
+	@ApiModelProperty(name = "elementList" , value = "推荐位数组")
+	private List<Element> elementList;
+
+	@TableField(exist = false)
+	@ApiModelProperty(name = "templetList" , value = "模板数组")
+	private List<RColumn> templetList;
 
 	@TableField(exist = false)
 	private Template speTemplate;

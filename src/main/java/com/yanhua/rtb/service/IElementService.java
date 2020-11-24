@@ -10,6 +10,7 @@ import com.yanhua.rtb.entity.Element;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhua.rtb.vo.ElementVo;
 import com.yanhua.rtb.vo.TempletVo;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,14 @@ public interface IElementService extends IService<Element> {
      */
     int countElementNumByTempletId(Integer templetId);
 
-    /**
-     *
-     * @description: 新增推荐位, 生成推荐位id
-     *      <p/>
-     * @param elementVo:
-     * @return com.yanhua.rtb.vo.ElementVo
-     */
-    ElementVo saveElement(ElementVo elementVo);
+//    /**
+//     *
+//     * @description: 新增推荐位, 生成推荐位id
+//     *      <p/>
+//     * @param elementVos:
+//     * @return com.yanhua.rtb.vo.ElementVo
+//     */
+//    List<ElementVo> saveElements(List<ElementVo> elementVos, Integer channelId, Integer templetId);
 
     /**
      *
@@ -84,5 +85,8 @@ public interface IElementService extends IService<Element> {
     ElementVo getElementAll(Integer elementId);
 
     List<ElementVo> getElementAlls (Integer templetId);
+
+
+    Integer getMaxElementOrder (Integer templetId);
 	
 }

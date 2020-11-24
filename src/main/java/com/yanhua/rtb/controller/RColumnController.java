@@ -6,6 +6,8 @@
  */
 package com.yanhua.rtb.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yanhua.rtb.mapper.RColumnMapper;
 import com.yanhua.rtb.service.ITemplateService;
 import com.yanhua.rtb.vo.ColumnVo;
 import com.yanhua.rtb.common.EngineException;
@@ -25,6 +27,8 @@ import io.swagger.annotations.Api;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.yanhua.rtb.common.ResultCodeEnum.*;
 
@@ -54,9 +58,11 @@ public class RColumnController {
     private IRColumnService columnService;
     @Autowired
     private ITemplateService iTemplateService;
+    @Autowired
+    private RColumnMapper columnMapper;
 
 
-    @ApiOperation(value = "查询地区下栏目的所有信息",httpMethod = "GET",notes = "默认返回该栏目以及其下的专题以及元素")
+    @ApiOperation(value = "查询渠道下栏目的所有信息",httpMethod = "GET",notes = "默认返回该栏目以及其下的专题以及元素")
     @RequestMapping(value = "/{channelId}/{columnId}",method = RequestMethod.GET)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="path", name = "columnId", value = "栏目id", required = true, dataType = "Long"),
@@ -75,7 +81,7 @@ public class RColumnController {
         return columnService.getAllColumnVoList(channelId,columnId,startPage,pageSize);
     }
 
-    @ApiOperation(value = "查询地区下的所有栏目信息",httpMethod = "GET",notes = "默认返回该渠道下的所有栏目集合")
+    @ApiOperation(value = "查询渠道下的所有栏目信息",httpMethod = "GET",notes = "默认返回该渠道下的所有栏目集合")
     @RequestMapping(value = "/{channelId}",method = RequestMethod.GET)
     @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long"),
             @ApiImplicitParam(paramType="query", name = "level", value = "层级", required = false, dataType = "Long")
@@ -100,21 +106,37 @@ public class RColumnController {
         if (columnVo.getUpdateTime()==null){
             columnVo.setUpdateTime(new Date());
         }
-        //TODO：目前栏目写死只有一级
-        columnVo.setLevel("1");
-        columnVo.setParColumnId(-1);
-        columnVo.setColumnOrder(columnService.countNumByParColumnId(-1)+1);
-        //获取模板样式
-        columnVo.setColTemplateVo(iTemplateService.getTemplateVo(columnVo.getTemplateId()));
-        RColumn rColumn = new RColumn();
-        BeanUtils.copyProperties(columnVo,rColumn);
-        if (columnService.saveOrUpdate(rColumn)){
-            columnVo.setColumnId(rColumn.getColumnId());
-            return columnVo;
-        }else {
-            log.error("更新/新增某个栏目基础信息==========>失败,channelId{}",channelId);
-            throw new EngineException("更新/新增栏目基础信息失败");
+        return columnService.updateOrSaveColumn(columnVo);
+    }
+
+
+    @ApiOperation(value = "维护某个渠道下所有栏目的排序信息",httpMethod = "POST",notes = "更新栏目排序元數據")
+    @RequestMapping(value = "/maintainOrder/{channelId}",method = RequestMethod.POST)
+    @ApiImplicitParams({@ApiImplicitParam(paramType="path", name = "channelId", value = "渠道id", required = true, dataType = "Long")
+    })
+    public String maintainColumn(@PathVariable Integer channelId,@RequestBody List<ColumnVo> columnVos){
+        areaService.checkArea(channelId);
+        //因为只要栏目id+栏目排序字段
+        if (columnVos==null||columnVos.size()<1){
+            throw new EngineException("栏目参数为空");
         }
+        List<ColumnVo> columnVos1 = columnVos.stream().filter(columnVo ->
+            columnVo!=null&&columnService.checkColumnAndArea(channelId,columnVo.getColumnId())).collect(Collectors.toList());
+        if (columnVos1.size()!=columnService.countNumByParColumnId(-1,channelId)){
+            throw new EngineException("参数栏目数量不正确");
+        }
+        List<RColumn> rColumns = columnVos.stream().map(columnVo -> {
+            RColumn rColumn = new RColumn();
+            BeanUtils.copyProperties(columnVo,rColumn);
+            return rColumn;
+        }).collect(Collectors.toList());
+        //这里用的plus的自带批量方法，原理是获取SQLsession一同提交。非plus需要xml自己先写好SQL语句
+        //Mapper userMapper = sqlSession.getMapper(Mapper.class);
+        //sqlSession.commit();
+        if (columnService.updateBatchById(rColumns)){
+            return "栏目排序维护成功";
+        }
+        return "栏目排序维护失败";
     }
 
     @ApiOperation(value = "更新/新增某个栏目的所有信息",httpMethod = "POST",notes = "更新/新增元數據,生成栏目id")
@@ -138,7 +160,6 @@ public class RColumnController {
         columnService.checkColumnAndArea(channelId, columnId);
         return columnService.deleteColumn(columnId);
     }
-
 
 
 }
