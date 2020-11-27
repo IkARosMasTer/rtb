@@ -297,6 +297,12 @@ public class ContentSpxlVo implements Serializable {
         this.contentName = ctccContentSpxlVo.getVideoName();
         this.suggestPrice = ctccContentSpxlVo.getPrice();
         this.validDate = DateUtils.string2Date(ctccContentSpxlVo.getExpirationDate(), "yyyy-MM-dd");
+        if (validDate.before(new Date())){
+            //过期版权
+            this.status = 1;
+        }else {
+            this.status = 0;
+        }
         this.copyrightId = ctccContentSpxlVo.getResourceId() == null ? copyrightId : ctccContentSpxlVo.getResourceId();
         this.label = label;
         //来源 岩华科技
@@ -316,13 +322,42 @@ public class ContentSpxlVo implements Serializable {
         List<ContentSpxlDetailVo> list = new ArrayList<>();
         List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos = ctccContentSpxlVo.getFileList();
         if (ctccContentSpxlDetailVos != null && ctccContentSpxlDetailVos.size() > 0) {
-            int[] ints = {1, 7, 8, 9, 13};
+            //竖屏分辨率
+            int[] ints = {1, 7, 8, 9, 13,14};
+            //横屏分辨率
+            int[] ints1 = {2,3,4,5,6,10,12};
+
             //处理视频
             Supplier<Stream<CtccContentSpxlDetailVo>> spxlDetailVoStream = () -> ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo != null && ArrayUtils.contains(ints, ctccContentSpxlDetailVo.getQuality())).sorted(Comparator.reverseOrder());
+            Supplier<Stream<CtccContentSpxlDetailVo>> spxlDetailVoStream2 = () -> ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo != null && ArrayUtils.contains(ints1, ctccContentSpxlDetailVo.getQuality())).sorted(Comparator.reverseOrder());
+
             //订购类型
+            //竖屏
             List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos1 = spxlDetailVoStream.get().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo.getType() == 1).collect(Collectors.toList());
-            if (ctccContentSpxlDetailVos1.size() > 0) {
+//            if (ctccContentSpxlDetailVos1.size() <1) {
+//                ctccContentSpxlDetailVos1 = ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo2 -> ctccContentSpxlDetailVo2 != null && ctccContentSpxlDetailVo2.getType()==1&&ctccContentSpxlDetailVo2.getQuality()==14).collect(Collectors.toList());
+//            }
+            if (ctccContentSpxlDetailVos1.size()>0){
                 CtccContentSpxlDetailVo ctccContentSpxlDetailVo = ctccContentSpxlDetailVos1.get(0);
+                ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
+                contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getRingId());
+                contentSpxlDetailVo.setFilePath(ctccContentSpxlDetailVo.getFilePath());
+                contentSpxlDetailVo.setFileSize(ctccContentSpxlDetailVo.getFileSize().doubleValue());
+                contentSpxlDetailVo.setFilePlayTime(ctccContentSpxlDetailVo.getDuration().intValue());
+                contentSpxlDetailVo.setFileCode(ctccContentSpxlDetailVo.getVideoFormat());
+                contentSpxlDetailVo.setSamplebitrate(ctccContentSpxlDetailVo.getVideoBitrate());
+                contentSpxlDetailVo.setSamplingrate(ctccContentSpxlDetailVo.getAudioRate().toString());
+                contentSpxlDetailVo.setResolution(ctccContentSpxlDetailVo.getChannel() == 1 ? "单声道" : "双声道");
+                list.add(contentSpxlDetailVo);
+            }
+            //横屏
+            List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos3 = ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo != null &&ctccContentSpxlDetailVo.getType() == 1&&ctccContentSpxlDetailVo.getQuality()==11).collect(Collectors.toList());
+            if (ctccContentSpxlDetailVos3.size() <1) {
+                //订购类型
+                ctccContentSpxlDetailVos3 = spxlDetailVoStream2.get().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo.getType() == 1).collect(Collectors.toList());
+            }
+            if (ctccContentSpxlDetailVos3.size()>0){
+                CtccContentSpxlDetailVo ctccContentSpxlDetailVo = ctccContentSpxlDetailVos3.get(0);
                 ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
                 contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getRingId());
                 contentSpxlDetailVo.setFilePath(ctccContentSpxlDetailVo.getFilePath());
@@ -336,6 +371,9 @@ public class ContentSpxlVo implements Serializable {
             }
             //试看类型
             List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos2 = spxlDetailVoStream.get().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo.getType() == 2).collect(Collectors.toList());
+//            if (ctccContentSpxlDetailVos2.size() <1) {
+//                ctccContentSpxlDetailVos2 = ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo2 -> ctccContentSpxlDetailVo2 != null && ctccContentSpxlDetailVo2.getType()==2&&ctccContentSpxlDetailVo2.getQuality()==14).collect(Collectors.toList());
+//            }
             if (ctccContentSpxlDetailVos2.size() > 0) {
                 CtccContentSpxlDetailVo ctccContentSpxlDetailVo = ctccContentSpxlDetailVos2.get(0);
                 ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
@@ -349,6 +387,26 @@ public class ContentSpxlVo implements Serializable {
                 contentSpxlDetailVo.setResolution(ctccContentSpxlDetailVo.getChannel() == 1 ? "单声道" : "双声道");
                 list.add(contentSpxlDetailVo);
             }
+            //横屏
+            List<CtccContentSpxlDetailVo> ctccContentSpxlDetailVos4 = ctccContentSpxlDetailVos.stream().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo != null &&ctccContentSpxlDetailVo.getType() == 2&&ctccContentSpxlDetailVo.getQuality()==11).collect(Collectors.toList());
+            if (ctccContentSpxlDetailVos4.size() <1) {
+                //订购类型
+                ctccContentSpxlDetailVos4 = spxlDetailVoStream2.get().filter(ctccContentSpxlDetailVo -> ctccContentSpxlDetailVo.getType() == 2).collect(Collectors.toList());
+            }
+            if (ctccContentSpxlDetailVos4.size()>0){
+                CtccContentSpxlDetailVo ctccContentSpxlDetailVo = ctccContentSpxlDetailVos4.get(0);
+                ContentSpxlDetailVo contentSpxlDetailVo = new ContentSpxlDetailVo();
+                contentSpxlDetailVo.setContentId(ctccContentSpxlVo.getRingId());
+                contentSpxlDetailVo.setFilePath(ctccContentSpxlDetailVo.getFilePath());
+                contentSpxlDetailVo.setFileSize(ctccContentSpxlDetailVo.getFileSize().doubleValue());
+                contentSpxlDetailVo.setFilePlayTime(ctccContentSpxlDetailVo.getDuration().intValue());
+                contentSpxlDetailVo.setFileCode(ctccContentSpxlDetailVo.getVideoFormat());
+                contentSpxlDetailVo.setSamplebitrate(ctccContentSpxlDetailVo.getVideoBitrate());
+                contentSpxlDetailVo.setSamplingrate(ctccContentSpxlDetailVo.getAudioRate().toString());
+                contentSpxlDetailVo.setResolution(ctccContentSpxlDetailVo.getChannel() == 1 ? "单声道" : "双声道");
+                list.add(contentSpxlDetailVo);
+            }
+
             this.fileList = list;
         }
     }

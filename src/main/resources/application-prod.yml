@@ -1,0 +1,46 @@
+#数据源配置
+spring:
+  redis:
+    ##redis 单机环境配置
+    host: 183.131.15.11
+    port: 6979
+    password: bms_pwd~!@123
+    #    host: 127.0.0.1
+    #    port: 6379
+    #    password:
+    database: 10
+    #    database: 0
+    ssl: false
+    ##redis 集群环境配置
+    #    cluster:
+    #      nodes: 192.168.0.95:6377,192.168.0.95:6378,192.168.0.95:6379,192.168.0.96:6377,192.168.0.96:6378,192.168.0.96:6379
+    #      max-redirects: 3
+    #      commandTimeout: 5000
+    #    timeout: 5000
+    lettuce:
+      pool:
+        min-idle: 10
+        max-active: 2000
+        max-idle: 20
+        max-wait: -1ms
+  #    jedis:
+  #      pool:
+  #        min-idle: 10  # 连接池中的最小空闲连接
+  #        max-active: 2005  #连接池最大连接数（使用负值表示没有限制）
+  #        max-wait: -1ms # 连接池最大阻塞等待时间（使用负值表示没有限制）
+  #        max-idle: 20 # 连接池中的最大空闲连接
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.0.96:3306/rtb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
+    username: dba
+    password: dba@2020
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 100
+      max-lifetime: 1800000
+      idle-timeout: 600000
+      connection-timeout: 60000
+      minimum-idle: 10
+
+swagger:
+  enable: true

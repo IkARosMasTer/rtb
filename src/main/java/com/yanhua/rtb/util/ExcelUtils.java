@@ -185,10 +185,10 @@ public class ExcelUtils {
             }
             for (int i = 1; i< rowLength;i++){
                 Map<String,String> map = new HashMap<>();
-                String contentSort = (String) getCellInfo(sheet.getRow(i),contentSortName,null);
-                if (!"浙江岩华文化科技有限公司".equals(contentSort)){
-                    continue;
-                }
+//                String contentSort = (String) getCellInfo(sheet.getRow(i),contentSortName,null);
+//                if (!"浙江岩华文化科技有限公司".equals(contentSort)){
+//                    continue;
+//                }
                 String contentId = getCellInfo(sheet.getRow(i),copyrightIdNo,null).toString();
                 if (StringUtils.isNotEmpty(contentId)) {
                     map.put("copyrightId",contentId);

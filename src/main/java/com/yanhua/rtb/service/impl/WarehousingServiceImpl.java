@@ -209,6 +209,8 @@ public class WarehousingServiceImpl implements WarehousingService {
 //                                    contentSpxl.setScreenshot(cnUnicomFileUrl+contentSpxl.getScreenshot());
 //                                }
                             contentSpxl.setOperator(2);
+                            //联通彩铃默认就是可用状态
+                            contentSpxl.setStatus(0);
                             stringBuffer.append(operate(stringBuffer,contentSpxl));
                             System.out.println("555555555555555555555="+stringBuffer.toString());
                             log.info("联通入库记录================>{},执行了num={}",stringBuffer.toString(),num);
@@ -241,7 +243,7 @@ public class WarehousingServiceImpl implements WarehousingService {
         List<String> retList = new ArrayList<>();
 //        template.opsForValue().set(GlobalConstant.CTCC_TOKEN_KEY,"gggggHD",36000,TimeUnit.SECONDS);
 //        String token = (String) template.opsForValue().get(GlobalConstant.CTCC_TOKEN_KEY);
-        log.info("diyici==============="+token);
+//        log.info("diyici==============="+token);
         try{
             //因为在异步中子线程睡眠会导致主线程也阻塞，从而抛出Interrupt异常，所以正确的做法是用lock来辨别
             Thread.sleep(2000L);
@@ -251,7 +253,7 @@ public class WarehousingServiceImpl implements WarehousingService {
         if (copyrightIds!=null&&copyrightIds.size()>0){
             try {
                 retList = copyrightIds.stream().filter(Objects::nonNull).map(s -> {
-                    s.put("token",token);
+//                    s.put("token",token);
                     StringBuilder stringBuffer = new StringBuilder(s.get("copyrightId"));
                     ContentSpxlVo contentSpxlVo = buildingCmccUrl(s);
                     if (contentSpxlVo!=null){
@@ -421,47 +423,14 @@ public class WarehousingServiceImpl implements WarehousingService {
         String copyrightId = map.get("copyrightId");
         //分类标签
         String label = map.get("label");
-        String token = map.get("token");
+//        String token = map.get("token");
 
         try {
-//            template.opsForValue().set(GlobalConstant.CTCC_TOKEN_KEY,"df4fcdfad9154d02b7c1bd3a6a59e727",36000,TimeUnit.SECONDS);
-//            token = (String) template.opsForValue().get(GlobalConstant.CTCC_TOKEN_KEY);
-            log.info("dierci===========success"+token);
+//            log.info("dierci===========success"+token);
 
-            //查看缓存是否存在
-//            String token1 = (String) template.opsForValue().get(GlobalConstant.CTCC_TOKEN_KEY);
-////            User user1 = (User) template.opsForHash().get("user", "user:string" );
-//            if (!StringUtils.isNotEmpty(token1)){
-//                String body = "{\n" +
-//                        "    \"msisdn\": 15906632054\n" +
-//                        "}";
-//                //
-//            String ret = HttpTools.doPost(chinaMobileTokenUrl,body);
-////                String ret = "{\n" +
-////                        "    \"code\": 200,\n" +
-////                        "    \"data\": {\n" +
-////                        "        \"resCode\": \"000000\",\n" +
-////                        "        \"msisdn\": \"182*****769\",\n" +
-////                        "        \"resMsg\": \"【OPEN】操作成功\",\n" +
-////                        "        \"token\": \"19f9d0aa65454c48aba9a3d3c070fb3e\"\n" +
-////                        "    },\n" +
-////                        "    \"mes\": \"ok\"\n" +
-////                        "}";
-//                if (StringUtils.isNotEmpty(ret)) {
-//                    JSONObject jsonObject = JSON.parseObject(ret);
-//                    if (jsonObject.containsKey("code")&&((Integer) jsonObject.get("code")==200)){
-//                        JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-//                        if (jsonObject1!=null&&jsonObject1.containsKey("token")){
-//                            token1 = (String) jsonObject1.get("token");
-//                            //放入redis缓存,有效期30分钟
-//                            template.opsForValue().set(GlobalConstant.CTCC_TOKEN_KEY,token1,3600,TimeUnit.SECONDS);
-//                        }
-//                    }
-//                }
-////                //token获取失败，直接返回错误信息，停止入库
-//            }
-            if (StringUtils.isNotBlank(token)) {
-                String data = "{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":" + channelCode + ",\"token\":" + token + ",\"vrbtId\":" + copyrightId + "}";
+//            if (StringUtils.isNotBlank(token)) {
+//                String data = "{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":" + channelCode + ",\"token\":" + token + ",\"vrbtId\":" + copyrightId + "}";
+                String data = "{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":" + channelCode + ",\"vrbtId\":" + copyrightId + "}";
 //                String ff = "https://m.12530.com/order/rest/vrbt/product/query.do?data=";
 //                String gg = "{\"youCallbackName\":\"infoDataCallBack\",\"channelCode\":\"00210OX\",\"token\":\"8bf9adf62276420d9fa4c229d8f3adbd\",\"vrbtId\":\"699052T2491M\"}";
                 data = URLEncoder.encode(data,"utf-8");
@@ -479,9 +448,9 @@ public class WarehousingServiceImpl implements WarehousingService {
                         }
                     }
                 }
-            }else {
-                log.error("移动入库出错=============>获取token失败或失效,copyrightId:{}跳过",copyrightId);
-            }
+//            }else {
+//                log.error("移动入库出错=============>获取token失败或失效,copyrightId:{}跳过",copyrightId);
+//            }
 //        }catch (ParseException e){
 //            log.error("移动入库出错=============>copyrightId:{}跳过,日期转换异常{}",copyrightId,e.getMessage());
         }catch (Exception e) {

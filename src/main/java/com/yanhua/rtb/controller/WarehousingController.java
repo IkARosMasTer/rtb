@@ -119,13 +119,14 @@ public class WarehousingController {
             throw new EngineException("IO流操作异常");
         }
         //事先redis获取token
-        String token = (String) template.opsForValue().get(GlobalConstant.CTCC_TOKEN_KEY);
-        if (!StringUtils.isNotEmpty(token)) {
-            String body = "{\n" +
-                    "    \"msisdn\": 15906632054\n" +
-                    "}";
-            //
-            String ret = HttpTools.doPost(chinaMobileTokenUrl, body);
+//        String token = (String) template.opsForValue().get(GlobalConstant.CTCC_TOKEN_KEY);
+        String token = null;
+//        if (!StringUtils.isNotEmpty(token)) {
+//            String body = "{\n" +
+//                    "    \"msisdn\": 15906632054\n" +
+//                    "}";
+//            //
+//            String ret = HttpTools.doPost(chinaMobileTokenUrl, body);
 //                String ret = "{\n" +
 //                        "    \"code\": 200,\n" +UserMapper
 //                        "    \"data\": {\n" +
@@ -136,23 +137,23 @@ public class WarehousingController {
 //                        "    },\n" +
 //                        "    \"mes\": \"ok\"\n" +
 //                        "}";
-            if (StringUtils.isNotEmpty(ret)) {
-                JSONObject jsonObject = JSON.parseObject(ret);
-                if (jsonObject.containsKey("code") && ((Integer) jsonObject.get("code") == 200)) {
-                    JSONObject jsonObject1 = jsonObject.getJSONObject("data");
-                    if (jsonObject1 != null && jsonObject1.containsKey("token")) {
-                        token = (String) jsonObject1.get("token");
-                        //放入redis缓存,有效期30分钟
-                        template.opsForValue().set(GlobalConstant.CTCC_TOKEN_KEY, token, 3600, TimeUnit.SECONDS);
-                    }
-                }
-            }
-        }
+//            if (StringUtils.isNotEmpty(ret)) {
+//                JSONObject jsonObject = JSON.parseObject(ret);
+//                if (jsonObject.containsKey("code") && ((Integer) jsonObject.get("code") == 200)) {
+//                    JSONObject jsonObject1 = jsonObject.getJSONObject("data");
+//                    if (jsonObject1 != null && jsonObject1.containsKey("token")) {
+//                        token = (String) jsonObject1.get("token");
+//                        //放入redis缓存,有效期30分钟
+//                        template.opsForValue().set(GlobalConstant.CTCC_TOKEN_KEY, token, 3600, TimeUnit.SECONDS);
+//                    }
+//                }
+//            }
+//        }
         log.info("移动excel上传接口=================>token记录:"+token);
-        if (!StringUtils.isNotEmpty(token)) {
-            log.error("移动入库出错=============>获取token失败");
-            throw new EngineException("移动入库获取token失败");
-        }
+//        if (!StringUtils.isNotEmpty(token)) {
+//            log.error("移动入库出错=============>获取token失败");
+//            throw new EngineException("移动入库获取token失败");
+//        }
         String finalToken = token;
         WebAsyncTask<List<String>> webAsyncTask = new WebAsyncTask<>(300L, () -> {
             log.info("<---------移动入库线程" + Thread.currentThread().getName()+"开始处理");
