@@ -41,6 +41,7 @@ spring:
       idle-timeout: 600000
       connection-timeout: 60000
       minimum-idle: 3 #测试环境用3，正式用111
+      #fff
 
 swagger:
   enable: true
