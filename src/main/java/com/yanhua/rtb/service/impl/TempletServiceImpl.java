@@ -71,7 +71,8 @@ public class TempletServiceImpl implements ITempletService {
         //todo:目前写死是二级
         templetVo.setLevel("2");
         //维护该模板所在栏目的模板顺序
-        int num = rColumnMapper.getMaxColumnOrder(areaId,columnId);
+        Integer num = rColumnMapper.getMaxColumnOrder(areaId,columnId);
+        num = num==null?0:num;
         if (templetVo.getColumnOrder() == null || templetVo.getColumnOrder() < 1 ) {
             //如果是新增且没有带序号或者带了序号并且大于现有总数,排序号=最大序号数+1
             templetVo.setColumnOrder(num + 1);

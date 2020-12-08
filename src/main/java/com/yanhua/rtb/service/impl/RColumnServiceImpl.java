@@ -350,7 +350,8 @@ public class RColumnServiceImpl extends ServiceImpl<RColumnMapper, RColumn> impl
         //如果是新增
         } else {
 //            int num = this.countNumByParColumnId(-1, columnVo.getChannelId());
-            int num = columnMapper.getMaxColumnOrder(columnVo.getChannelId(),-1);
+            Integer num = columnMapper.getMaxColumnOrder(columnVo.getChannelId(),-1);
+            num = num==null?0:num;
             if (columnVo.getColumnOrder() == null || columnVo.getColumnOrder() < 1 ) {
                 //如果是新增且没有带序号或者带了序号并且大于现有总数,排序号=总数+1
                 columnVo.setColumnOrder(num + 1);

@@ -76,7 +76,7 @@ warehousing:
     lizi:
       code: 3000007928
       md5: 02EE84236CAB5974
-    fileUrl: http://listen.10155.com/listener//90115000/mv_vod/volteposter/horizontalpath/20201023/1319566610898452482.jpg
+    fileUrl: http://listen.10155.com/listener
     user: 18720552070
   chinaMobile:
     url: https://m.12530.com/order/rest/vrbt/product/query.do?data=
@@ -88,4 +88,6 @@ warehousing:
 
 mams:
   path: /movies/mams
+rtb:
+  domain: http://crbt.yanhuamedia.tv
 

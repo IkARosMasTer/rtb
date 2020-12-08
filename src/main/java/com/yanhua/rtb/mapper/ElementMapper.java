@@ -53,6 +53,6 @@ public interface ElementMapper extends BaseMapper<Element> {
 
 
     @Select("select MAX(a.element_order) AS element_order FROM `element` a WHERE a.column_id = #{templetId} ")
-    int getMaxElementOrder(@Param("templetId") Integer templetId);
+    Integer getMaxElementOrder(@Param("templetId") Integer templetId);
 
 }

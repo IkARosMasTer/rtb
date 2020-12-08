@@ -89,7 +89,7 @@ public interface RColumnMapper extends BaseMapper<RColumn> {
      * @return int
      */
     @Select("select MAX(a.column_order) AS column_order FROM `r_column` a WHERE a.channel_id = #{channelId} AND a.par_column_id = #{parColumnId} ")
-    int getMaxColumnOrder(@Param("channelId") Integer channelId,@Param("parColumnId") Integer parColumnId);
+    Integer getMaxColumnOrder(@Param("channelId") Integer channelId,@Param("parColumnId") Integer parColumnId);
 
 
     /**

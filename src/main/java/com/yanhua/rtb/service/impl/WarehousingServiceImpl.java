@@ -199,15 +199,15 @@ public class WarehousingServiceImpl implements WarehousingService {
                                 contentSpxl.setAttribution(9);
                             }
                             //为图片增加前缀URL
-//                                if (StringUtils.isNotEmpty(contentSpxl.getPoster())){
-//                                    contentSpxl.setPoster(cnUnicomFileUrl+contentSpxl.getVerPoster());
-//                                }
-//                                if (StringUtils.isNotEmpty(contentSpxl.getVerPoster())){
-//                                    contentSpxl.setVerPoster(cnUnicomFileUrl+contentSpxl.getVerPoster());
-//                                }
-//                                if (StringUtils.isNotEmpty(contentSpxl.getScreenshot())){
-//                                    contentSpxl.setScreenshot(cnUnicomFileUrl+contentSpxl.getScreenshot());
-//                                }
+                            if (StringUtils.isNotEmpty(contentSpxl.getPoster())){
+                                contentSpxl.setPoster(cnUnicomFileUrl+contentSpxl.getVerPoster());
+                            }
+                            if (StringUtils.isNotEmpty(contentSpxl.getVerPoster())){
+                                contentSpxl.setVerPoster(cnUnicomFileUrl+contentSpxl.getVerPoster());
+                            }
+                            if (StringUtils.isNotEmpty(contentSpxl.getScreenshot())){
+                                contentSpxl.setScreenshot(cnUnicomFileUrl+contentSpxl.getScreenshot());
+                            }
                             contentSpxl.setOperator(2);
                             //联通彩铃默认就是可用状态
                             contentSpxl.setStatus(0);

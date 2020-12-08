@@ -121,8 +121,14 @@ public class AreaController {
         return areaService.saveOrUpdate(area);
     }
     @ApiOperation(value = "复制某个渠道信息",httpMethod = "POST",notes = "复制元數據")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "id", value = "渠道id", required = true, dataType = "Long"),
+            @ApiImplicitParam(paramType = "query", name = "channelCode", value = "渠道标识", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "company", value = "公司名称", required = true, dataType = "String")
+
+    })
     @RequestMapping(value = "/copy/{id}",method = RequestMethod.POST)
-    public String copyArea(@PathVariable Integer id){
+    public String copyArea(@PathVariable Integer id,@RequestParam String channelCode,@RequestParam String company){
         //查出渠道
         Area area = areaService.checkArea(id);
         if (area.getCreateTime()==null){
@@ -138,6 +144,8 @@ public class AreaController {
         List<RColumn> rColumns = areaService.copyAreaAll(area);
         //重新复制插入
         area.setChannelId(null);
+        area.setChannelCode(channelCode);
+        area.setCompany(company);
         if (areaService.saveOrUpdate(area)){
             if (rColumns!=null&&rColumns.size()>0) {
                 List<ColumnVo> columnVos = irColumnService.importColumnList(rColumns, area.getChannelId());

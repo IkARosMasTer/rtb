@@ -50,7 +50,7 @@ import static com.yanhua.rtb.common.ResultCodeEnum.PARAM_IS_BLANK;
  *
  */
 @Slf4j
-@Validated
+//@Validated
 @Api(tags = "推荐位控制器" )
 @RestController
 @ResponseResult
@@ -99,6 +99,7 @@ public class ElementController {
                 elementVo.setUpdateTime(new Date());
             }
             Integer maxElementOrder = iElementService.getMaxElementOrder(templetId);
+            maxElementOrder = maxElementOrder==null?0:maxElementOrder;
             //新增推荐位不能顺带指定序号，因为批量情况下序号指定和插入是分开的。
             elementVo.setElementOrder(maxElementOrder + i.incrementAndGet());
             Element element = new Element();
@@ -265,8 +266,8 @@ public class ElementController {
                 }
                 log.info("imgFile="+imgFile);
                 long  gg = imgFile.getSize();
-                if (imgFile.getSize()>80*1024L){
-                    throw new EngineException("图片大小不得超过80kb");
+                if (imgFile.getSize()>110*1024L){
+                    throw new EngineException("图片大小不得超过100kb");
                 }
                 String name = imgFile.getOriginalFilename();
                 if (StringUtils.isNotEmpty(name)) {
@@ -281,22 +282,23 @@ public class ElementController {
 //                        }
                         String suffix = name.substring(name.lastIndexOf(".")).toLowerCase();
 //                        String targetUrl = FileUtil.createImgPath(name);
-                        String targetUrl = environment.getProperty("mams.path")+FileUtil.createImgPath(name);
+                        String targetUrl = FileUtil.createImgPath(name);
 //                        targetUrl = "C:/Users/49 468/AppData/Local/Temp/tomcat.1992147345107226461.8088/work/Tomcat/localhost/rtb"+targetUrl;
                         log.info("tar="+targetUrl);
-                        File targetFile = new File(targetUrl);
+                        File targetFile = new File(environment.getProperty("mams.path")+targetUrl);
                         if (!targetFile.getParentFile().exists()) {
                             targetFile.getParentFile().mkdirs();
                         }
                         imgFile.transferTo(targetFile);
                         log.info("彩铃contentId{}的原竖图为{}",contentId,StringUtils.isEmpty(contentSpxl.getPoster())?contentSpxl.getVerPoster():contentSpxl.getPoster());
                         if (StringUtils.isEmpty(contentSpxl.getPoster())){
-                            contentSpxl.setVerPoster(targetUrl);
+                            contentSpxl.setVerPoster(environment.getProperty("rtb.domain")+targetUrl);
                         }else {
-                            contentSpxl.setPoster(targetUrl);
+                            contentSpxl.setPoster(environment.getProperty("rtb.domain")+targetUrl);
                         }
                         iContentSpxlService.updateById(contentSpxl);
-                        return targetUrl;
+                        log.info("new url={}",environment.getProperty("rtb.domain")+targetUrl);
+                        return environment.getProperty("rtb.domain")+targetUrl;
                     } catch (IOException e) {
                         e.printStackTrace();
                         log.error("图片保存IO错误:" + e.getMessage());
